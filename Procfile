@@ -1,1 +1,1 @@
-web: poetry run bot
+web: python together_bot/bot.py
