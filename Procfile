@@ -1,1 +1,1 @@
-web: python together_bot/bot.py
+worker: python together_bot/bot.py
