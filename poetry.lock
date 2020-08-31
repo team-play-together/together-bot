@@ -203,9 +203,9 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "13010c9410e24682e3a98c08b64dbedd7f515539efb55d46d2ed6fd636b0bc9c"
+content-hash = "476497c75245d74815ee4f8fc80d9bf3c35065f3359cab3ad077e7468e5f796a"
 lock-version = "1.0"
-python-versions = "^3.8"
+python-versions = "3.8.5"
 
 [metadata.files]
 aiohttp = [
