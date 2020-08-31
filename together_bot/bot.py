@@ -31,8 +31,12 @@ async def on_message(message: discord.Message):
         await message.channel.send('pong')
 
 def start():
+    print('Start bot')
     if DISCORD_BOT_TOKEN:
         client.run(DISCORD_BOT_TOKEN)
     else:
         print('MUST NEED BOT TOKEN', file=sys.stderr)
+
+if __name__ == '__main__':
+    start()
 
