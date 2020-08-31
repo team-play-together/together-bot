@@ -1,5 +1,7 @@
 import os
 import logging
+import sys
+
 from dotenv import load_dotenv
 
 import discord
@@ -7,7 +9,7 @@ from discord.ext import commands
 
 logging.basicConfig(level=logging.INFO)
 
-load_dotenv(verbose=True)
+load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN')
 
@@ -29,5 +31,8 @@ async def on_message(message: discord.Message):
         await message.channel.send('pong')
 
 def start():
-    client.run(DISCORD_BOT_TOKEN)
+    if DISCORD_BOT_TOKEN:
+        client.run(DISCORD_BOT_TOKEN)
+    else:
+        print('MUST NEED BOT TOKEN', file=sys.stderr)
 
