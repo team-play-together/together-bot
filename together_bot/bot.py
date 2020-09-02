@@ -13,43 +13,51 @@ load_dotenv()
 
 DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
 
-client = discord.Client()
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"))
 
 
-@client.event
+@bot.event
 async def on_ready():
-    print("We have logged in as {0.user}".format(client))
+    print(f"We have logged in as {bot.user}")
 
 
-@client.event
+@bot.event
 async def on_message(message: discord.Message):
-    if message.author == client.user:
+    if message.author == bot.user:
         return
-    if message.mentions and client.user in message.mentions:
+    if message.mentions and bot.user in message.mentions:
         content = message.content.strip()
-        mention_prefix = (client.user.mention, "<@!{}>".format(client.user.id))
+        mention_prefix = (bot.user.mention, "<@!{}>".format(bot.user.id))
         if content.startswith(mention_prefix):
             len_mention = content.find(">")
             content = message.content[len_mention + 1 :].strip()
-            if content.startswith("ping"):
-                await message.channel.send("pong")
-            elif message.content.startswith("repo"):
+            if message.content.startswith("repo"):
                 await message.channel.send(
                     "repo URL: https://github.com/team-play-together/together-bot"
                 )
 
-    if message.content.startswith("!ping"):
-        await message.channel.send("pong")
-    elif message.content.startswith("!repo"):
+    if message.content.startswith("!repo"):
         await message.channel.send(
             "repo URL: https://github.com/team-play-together/together-bot"
         )
+
+    await bot.process_commands(message)
+
+
+@commands.command()
+async def ping(ctx):
+    await ctx.send("pong!")
+
+
+def setup(bot):
+    bot.add_command(ping)
 
 
 def start():
     print("Start bot")
     if DISCORD_BOT_TOKEN:
-        client.run(DISCORD_BOT_TOKEN)
+        setup(bot)
+        bot.run(DISCORD_BOT_TOKEN)
     else:
         print("MUST NEED BOT TOKEN", file=sys.stderr)
 
