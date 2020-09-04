@@ -25,12 +25,25 @@ async def on_ready():
 async def on_message(message: discord.Message):
     if message.author == client.user:
         return
-    if message.mentions:
-        # TODO: reaction only mentions
-        # BOT mention text: `<@!749558517685551166>`
-        pass
+    if message.mentions and client.user in message.mentions:
+        content = message.content.strip()
+        mention_prefix = (client.user.mention, "<@!{}>".format(client.user.id))
+        if content.startswith(mention_prefix):
+            len_mention = content.find(">")
+            content = message.content[len_mention + 1 :].strip()
+            if content.startswith("ping"):
+                await message.channel.send("pong")
+            elif message.content.startswith("repo"):
+                await message.channel.send(
+                    "repo URL: https://github.com/team-play-together/together-bot"
+                )
+
     if message.content.startswith("!ping"):
         await message.channel.send("pong")
+    elif message.content.startswith("!repo"):
+        await message.channel.send(
+            "repo URL: https://github.com/team-play-together/together-bot"
+        )
 
 
 def start():
