@@ -51,6 +51,12 @@ async def repo(ctx):
 
 
 @commands.command()
+async def google(ctx, *args):
+    query = "+".join(args)
+    await ctx.send(f"https://www.google.com/search?q={query}")
+
+
+@commands.command()
 async def ping(ctx):
     await ctx.send("pong!")
 
@@ -59,6 +65,7 @@ def setup(bot):
     bot.add_command(ping)
     bot.add_command(repo)
     bot.add_command(_random)
+    bot.add_command(google)
 
 
 def start():
