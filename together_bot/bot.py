@@ -38,7 +38,7 @@ async def on_message(message: discord.Message):
 
 
 @commands.command(name="random")
-async def _random(ctx, *, num: int):
+async def _random(ctx, num: int):
     random_number = random.randrange(num) + 1
     await ctx.send(f"Random number : {random_number}")
 
