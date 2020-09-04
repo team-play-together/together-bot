@@ -31,17 +31,16 @@ async def on_message(message: discord.Message):
         if content.startswith(mention_prefix):
             len_mention = content.find(">")
             content = message.content[len_mention + 1 :].strip()
-            if message.content.startswith("repo"):
-                await message.channel.send(
-                    "repo URL: https://github.com/team-play-together/together-bot"
-                )
-
-    if message.content.startswith("!repo"):
-        await message.channel.send(
-            "repo URL: https://github.com/team-play-together/together-bot"
-        )
+            # remains for later
 
     await bot.process_commands(message)
+
+
+@commands.command()
+async def repo(ctx):
+    await ctx.send(
+        "Bot repository URL : repo URL: https://github.com/team-play-together/together-bot"
+    )
 
 
 @commands.command()
@@ -51,6 +50,7 @@ async def ping(ctx):
 
 def setup(bot):
     bot.add_command(ping)
+    bot.add_command(repo)
 
 
 def start():
