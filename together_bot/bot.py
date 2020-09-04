@@ -1,6 +1,7 @@
 import os
 import logging
 import sys
+import random
 
 from dotenv import load_dotenv
 
@@ -36,6 +37,12 @@ async def on_message(message: discord.Message):
     await bot.process_commands(message)
 
 
+@commands.command(name="random")
+async def _random(ctx, *, num: int):
+    random_number = random.randrange(num) + 1
+    await ctx.send(f"Random number : {random_number}")
+
+
 @commands.command()
 async def repo(ctx):
     await ctx.send(
@@ -51,6 +58,7 @@ async def ping(ctx):
 def setup(bot):
     bot.add_command(ping)
     bot.add_command(repo)
+    bot.add_command(_random)
 
 
 def start():
