@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 import together_bot.channel
+import together_bot.role
 
 logging.basicConfig(level=logging.INFO)
 
@@ -74,6 +75,7 @@ def start():
     if DISCORD_BOT_TOKEN:
         setup(bot)
         together_bot.channel.setup(bot)
+        together_bot.role.setup(bot)
         bot.run(DISCORD_BOT_TOKEN)
     else:
         print("MUST NEED BOT TOKEN", file=sys.stderr)
