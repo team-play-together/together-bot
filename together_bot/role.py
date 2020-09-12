@@ -1,4 +1,5 @@
 import asyncio
+import sys
 from typing import Dict
 
 import discord
@@ -19,7 +20,7 @@ class Role(commands.Cog):
         if role_player is not None:
             await member.add_roles(role_player)
         else:
-            print("Error: Role 'player' doesn't exist.")
+            print("Role 'player' doesn't exist.", file=sys.stderr)
 
     @commands.group()
     async def role(self, ctx):
