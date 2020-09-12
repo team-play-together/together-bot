@@ -1,6 +1,7 @@
 import asyncio
 from typing import Dict
 
+import discord
 from discord.ext import commands
 
 _raised_hand = "\N{RAISED HAND}"
@@ -11,6 +12,14 @@ class Role(commands.Cog):
         self.bot = bot
         self.guild_roles: Dict[int, int] = {}
         self.map_message_role: Dict[int, int] = {}
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member: discord.Member):
+        role_player = discord.utils.get(member.guild.roles, name="player")
+        if role_player is not None:
+            await member.add_roles(role_player)
+        else:
+            print("Error: Role 'player' doesn't exist.")
 
     @commands.group()
     async def role(self, ctx):
