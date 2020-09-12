@@ -39,15 +39,6 @@ async def on_message(message: discord.Message):
     await bot.process_commands(message)
 
 
-@bot.event
-async def on_member_join(member: discord.Member):
-    role_player = discord.utils.get(member.guild.roles, name="player")
-    if role_player is None:
-        print("Error: Role 'player' doesn't exist.")
-        return
-    await member.add_roles(role_player)
-
-
 @commands.command(name="random")
 async def _random(ctx, num: int):
     random_number = random.randrange(num) + 1
