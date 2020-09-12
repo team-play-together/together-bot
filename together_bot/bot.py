@@ -1,12 +1,12 @@
-import os
 import logging
-import sys
+import os
 import random
-
-from dotenv import load_dotenv
+import sys
 
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
+
 import together_bot.channel
 import together_bot.role
 
