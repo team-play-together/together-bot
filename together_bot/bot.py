@@ -48,7 +48,7 @@ async def _random(ctx, num: int):
 @commands.command()
 async def repo(ctx):
     await ctx.send(
-        "Bot repository URL : repo URL: https://github.com/team-play-together/together-bot"
+        "Bot repository URL : https://github.com/team-play-together/together-bot"
     )
 
 

@@ -5,10 +5,10 @@ from typing import Dict
 import discord
 from discord.ext import commands
 
-_raised_hand = "\N{RAISED HAND}"
-
 
 class Role(commands.Cog):
+    _raised_hand = "\N{RAISED HAND}"
+
     def __init__(self, bot):
         self.bot = bot
         self.guild_roles: Dict[int, int] = {}
@@ -29,28 +29,46 @@ class Role(commands.Cog):
 
     @role.command()
     async def create(self, ctx, *, name: str):
-        channel = ctx.channel
         author = ctx.author
+        guild = ctx.guild
+
+        if (role := discord.utils.get(guild.roles, name=name)) :
+            delay = 15.0
+            await ctx.send(f"`{role.name}` is already exists", delete_after=delay)
+            await ctx.message.delete(delay=delay)
+            return None
 
         reply = await ctx.send(
-            f"To create channel '{name}', add {_raised_hand} reaction"
+            f"To create role '{name}', add {self._raised_hand} reaction"
         )
-        await reply.add_reaction(_raised_hand)
+        await reply.add_reaction(self._raised_hand)
 
         def check(reaction, user):
             return (
-                user == ctx.message.author
-                and str(reaction.emoji) == _raised_hand
+                user == author
+                and str(reaction.emoji) == self._raised_hand
                 and reaction.message.id == reply.id
             )
 
         try:
             await ctx.bot.wait_for("reaction_add", check=check, timeout=60.0)
             role = await ctx.guild.create_role(name=name)
-            await ctx.send(f"Create role @{role.mention}")
+            await ctx.send(f"Create role {role.mention}")
         except asyncio.TimeoutError:
+            await ctx.send("Timeout: Cancel to create role")
+        finally:
             await reply.delete()
             await ctx.message.delete()
+
+    @create.error
+    async def info_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("To create : `role create {role}`", delete_after=10.0)
+            await ctx.message.delete()
+
+    @role.command()
+    async def list(self, ctx):
+        pass
 
     @role.command()
     async def delete(self, ctx, *, name: str):
