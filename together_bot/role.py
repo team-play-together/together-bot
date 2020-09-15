@@ -61,7 +61,7 @@ class Role(commands.Cog):
             await ctx.message.delete()
 
     @create.error
-    async def info_error(self, ctx, error):
+    async def create_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("To create : `role create {role}`", delete_after=10.0)
             await ctx.message.delete()
