@@ -11,8 +11,7 @@ class Role(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.guild_roles: Dict[int, int] = {}
-        self.map_message_role: Dict[int, int] = {}
+        self.guild_message_role: Dict[discord.Guild, Dict[int, discord.Role]] = {}
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
@@ -22,10 +21,52 @@ class Role(commands.Cog):
         else:
             print("Role 'player' doesn't exist.", file=sys.stderr)
 
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User):
+        if user.bot is True:
+            return
+
+        if reaction.message.guild is not None:
+            if (message_role := self.guild_message_role.get(reaction.message.guild)) :
+                if (role := message_role.get(reaction.message.id)) :
+                    await user.add_roles(role)
+
+    @commands.Cog.listener()
+    async def on_reaction_remove(self, reaction: discord.Reaction, user: discord.User):
+        if user.bot is True:
+            return
+
+        if reaction.message.guild is not None:
+            if (message_role := self.guild_message_role.get(reaction.message.guild)) :
+                if (role := message_role.get(reaction.message.id)) :
+                    await user.remove_roles(role)
+
     @commands.group()
     async def role(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.send("Need subcommand")
+            await ctx.send("Need subcommand", delete_after=15.0)
+            await ctx.message.delete(delete_after=15.0)
+
+    @role.command()
+    async def get(self, ctx, name: str):
+        role = discord.utils.get(ctx.guild.roles, name=name)
+        if role is not None:
+            message = await ctx.send(
+                f"Exists **_{role.name}_**, assign to role, "
+                f"add Reaction {self._raised_hand}",
+                delete_after=60.0 * 5,
+            )
+            await message.add_reaction(self._raised_hand)
+
+            if self.guild_message_role.get(ctx.guild) is None:
+                self.guild_message_role[ctx.guild] = {}
+            self.guild_message_role[ctx.guild][message.id] = role
+
+    @get.error
+    async def get_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send("`role get {role}`, role name must need", delete_after=10.0)
+            await ctx.message.delete()
 
     @role.command()
     async def create(self, ctx, *, name: str):
