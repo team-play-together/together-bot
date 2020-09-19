@@ -49,18 +49,21 @@ class Role(commands.Cog):
 
     @role.command()
     async def get(self, ctx, name: str):
+        delay = 60.0 * 5
         role = discord.utils.get(ctx.guild.roles, name=name)
         if role is not None:
             message = await ctx.send(
                 f"Exists **_{role.name}_**, assign to role, "
                 f"add Reaction {self._raised_hand}",
-                delete_after=60.0 * 5,
+                delete_after=delay,
             )
             await message.add_reaction(self._raised_hand)
 
             if self.guild_message_role.get(ctx.guild) is None:
                 self.guild_message_role[ctx.guild] = {}
             self.guild_message_role[ctx.guild][message.id] = role
+
+            ctx.message.delete(delay=delay)
 
     @get.error
     async def get_error(self, ctx, error):
