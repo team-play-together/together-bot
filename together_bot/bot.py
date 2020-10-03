@@ -1,8 +1,11 @@
 import logging
+import logging.config
 import os
 import random
 import sys
+from pathlib import Path
 
+import yaml
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -10,7 +13,10 @@ from dotenv import load_dotenv
 import together_bot.channel
 import together_bot.role
 
-logging.basicConfig(level=logging.INFO)
+ROOT_DIR = Path(__file__).parent.parent
+CONFIG_PATH = os.path.join(ROOT_DIR, "logging.yml")
+with open(CONFIG_PATH) as f:
+    logging.config.dictConfig(yaml.safe_load(f))
 
 load_dotenv()
 
@@ -21,7 +27,7 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"))
 
 @bot.event
 async def on_ready():
-    print(f"We have logged in as {bot.user}")
+    logging.info(f"We have logged in as {bot.user}")
 
 
 @bot.event
@@ -71,14 +77,14 @@ def setup(bot):
 
 
 def start():
-    print("Start bot")
+    logging.info("Start bot")
     if DISCORD_BOT_TOKEN:
         setup(bot)
         together_bot.channel.setup(bot)
         together_bot.role.setup(bot)
         bot.run(DISCORD_BOT_TOKEN)
     else:
-        print("MUST NEED BOT TOKEN", file=sys.stderr)
+        logging.error("MUST NEED BOT TOKEN")
 
 
 if __name__ == "__main__":
