@@ -5,7 +5,7 @@ description = ""
 authors = ["Lyuha <lyuha@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
-python = "3.8.5"
+python = "3.8.6"
 "discord.py" = "^1.4.1"
 python-dotenv = "^0.14.0"
 pyyaml = "^5.3.1"
@@ -27,6 +27,7 @@ force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
 line_length = 88
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
