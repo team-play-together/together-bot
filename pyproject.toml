@@ -8,6 +8,7 @@ authors = ["Lyuha <lyuha@users.noreply.github.com>"]
 python = "3.8.5"
 "discord.py" = "^1.4.1"
 python-dotenv = "^0.14.0"
+pyyaml = "^5.3.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -19,10 +20,6 @@ mypy = "^0.782"
 [tool.poetry.scripts]
 bot = 'together_bot.bot:start'
 
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
-
 [tool.isort]
 multi_line_output = 3
 include_trailing_comma = true
@@ -30,3 +27,7 @@ force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
 line_length = 88
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+

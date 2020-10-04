@@ -1,3 +1,4 @@
+import logging
 import asyncio
 import sys
 from typing import Dict
@@ -19,7 +20,7 @@ class Role(commands.Cog):
         if role_player is not None:
             await member.add_roles(role_player)
         else:
-            print("Role 'player' doesn't exist.", file=sys.stderr)
+            logging.error("Role 'player' doesn't exist.")
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction: discord.Reaction, user: discord.User):
