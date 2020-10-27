@@ -1,7 +1,7 @@
 import logging
 import asyncio
-import sys
-from typing import Dict
+from typing import Dict, Optional
+import re
 
 import discord
 from discord.ext import commands
@@ -49,9 +49,36 @@ class Role(commands.Cog):
             await ctx.message.delete(delete_after=15.0)
 
     @role.command()
-    async def get(self, ctx, name: str):
-        delay = 60.0 * 5
+    async def get(self, ctx, name: str, duration: Optional[str]):
+        logging.info(f"Call get commands with name: `{name}`, duration: `{duration}`")
+
+        def convert_to_seconds(time_duration: str):
+            seconds_per_unit = {
+                "s": 1.0,
+                "m": 60.0,
+                "h": 60.0 * 60,
+                "d": 60.0 * 60 * 24,
+                "w": 60.0 * 60 * 24 * 7,
+            }
+
+            return int(time_duration[:-1]) * seconds_per_unit[time_duration[-1]]
+
+        delay = 60.0 * 10
         role = discord.utils.get(ctx.guild.roles, name=name)
+
+        if duration is not None:
+            duration = duration.strip().lower()
+            r = re.compile(r"^[0-9]+[smhdw]$")
+            if r.match(duration):
+                two_week_seconds = convert_to_seconds("2w")
+
+                delay = convert_to_seconds(duration)
+
+                if delay > two_week_seconds:
+                    delay = two_week_seconds
+
+        logging.info(f"`Get` command sets delay: {delay}")
+
         if role is not None:
             message = await ctx.send(
                 f"Exists **_{role.name}_**, assign to role, "
@@ -64,7 +91,7 @@ class Role(commands.Cog):
                 self.guild_message_role[ctx.guild] = {}
             self.guild_message_role[ctx.guild][message.id] = role
 
-            ctx.message.delete(delay=delay)
+            await ctx.message.delete(delay=delay)
 
     @get.error
     async def get_error(self, ctx, error):
