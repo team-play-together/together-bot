@@ -150,6 +150,26 @@ class Role(commands.Cog):
     async def cleanup(self, ctx):
         pass
 
+    @role.command()
+    async def members(self, ctx, name: str):
+        logging.info(f"Call members commands with name: `{name}`")
+        guild = ctx.guild
+
+        if (role := discord.utils.get(guild.roles, name=name)) :
+            if len(role.members) == 0:
+                await ctx.send(f"No one is in role `{role.name}`.")
+                return None
+            member_names = ", ".join([f"`{member.name}`" for member in role.members])
+            await ctx.send(f"Members of `{role.name}`: {member_names}")
+
+    @members.error
+    async def members_error(self, ctx, error):
+        if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(
+                "To list members of the role : `role members {role}`", delete_after=10.0
+            )
+            await ctx.message.delete()
+
 
 def setup(bot):
     bot.add_cog(Role(bot))
