@@ -3,13 +3,13 @@ import asyncio
 from discord.ext import commands
 
 
-@commands.group()
+@commands.group(brief="TBD")
 async def channel(ctx):
     if ctx.invoked_subcommand is None:
         await ctx.send("Need subcommand")
 
 
-@channel.command()
+@channel.command(brief="TBD")
 async def create(ctx, *, name: str):
     # text channel format : no space, use `-`
     # voice channel name : can include space

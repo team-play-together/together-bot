@@ -42,13 +42,13 @@ class Role(commands.Cog):
                 if (role := message_role.get(reaction.message.id)) :
                     await user.remove_roles(role)
 
-    @commands.group()
+    @commands.group(brief="역할 관련 명령어 모음.")
     async def role(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send("Need subcommand", delete_after=15.0)
             await ctx.message.delete(delete_after=15.0)
 
-    @role.command()
+    @role.command(brief="특정 역할에 참가함.", help="name에 참가할 역할 이름을 입력함.")
     async def get(self, ctx, name: str, duration: Optional[str]):
         logging.info(f"Call get commands with name: `{name}`, duration: `{duration}`")
 
@@ -99,7 +99,7 @@ class Role(commands.Cog):
             await ctx.send("`role get {role}`, role name must need", delete_after=10.0)
             await ctx.message.delete()
 
-    @role.command()
+    @role.command(brief="역할을 생성함.", help="name에 생성할 역할의 이름을 입력함.")
     async def create(self, ctx, *, name: str):
         author = ctx.author
         guild = ctx.guild
@@ -138,19 +138,19 @@ class Role(commands.Cog):
             await ctx.send("To create : `role create {role}`", delete_after=10.0)
             await ctx.message.delete()
 
-    @role.command()
+    @role.command(brief="TBD")
     async def list(self, ctx):
         pass
 
-    @role.command()
+    @role.command(brief="TBD")
     async def delete(self, ctx, *, name: str):
         pass
 
-    @role.command()
+    @role.command(brief="TBD")
     async def cleanup(self, ctx):
         pass
 
-    @role.command()
+    @role.command(brief="특정 역할에 속한 사람들의 이름을 전부 출력함.", help="name에 보고 싶은 역할의 이름을 입력함.")
     async def members(self, ctx, name: str):
         logging.info(f"Call members commands with name: `{name}`")
         guild = ctx.guild
