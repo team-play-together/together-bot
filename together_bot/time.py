@@ -18,7 +18,7 @@ class Time(commands.Cog):
     async def time(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send("Need subcommand", delete_after=15.0)
-            await ctx.message.delete(delete_after=15.0)
+            await ctx.message.delete(delay=15.0)
 
     @time.command(brief="현재 시간을 UTC와 PST로 보여줌.")
     async def now(self, ctx):
