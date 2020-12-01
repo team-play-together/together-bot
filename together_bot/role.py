@@ -48,7 +48,8 @@ class Role(commands.Cog):
             await ctx.send("Need subcommand", delete_after=15.0)
             await ctx.message.delete(delay=15.0)
 
-    @role.command(brief="특정 역할에 참가함.", help="name에 참가할 역할 이름을 입력함.")
+    @role.command(brief="특정 역할에 참가함.", help="""name에 참가할 역할 이름을 입력함.
+    role get \"role with space\" 10m""")
     async def get(self, ctx, name: str, duration: Optional[str]):
         logging.info(f"Call get commands with name: `{name}`, duration: `{duration}`")
 
