@@ -81,20 +81,20 @@ async def ping(ctx):
     await ctx.send("pong!")
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_command(ping)
     bot.add_command(repo)
     bot.add_command(_random)
     bot.add_command(google)
+    together_bot.channel.setup(bot)
+    together_bot.role.setup(bot)
+    together_bot.time.setup(bot)
 
 
 def start():
     logging.info("Start bot")
     if DISCORD_BOT_TOKEN:
         setup(bot)
-        together_bot.channel.setup(bot)
-        together_bot.role.setup(bot)
-        together_bot.time.setup(bot)
         bot.run(DISCORD_BOT_TOKEN)
     else:
         logging.error("MUST NEED BOT TOKEN")
