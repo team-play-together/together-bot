@@ -2,7 +2,6 @@ import logging
 import logging.config
 import os
 import random
-import sys
 from pathlib import Path
 
 import yaml
