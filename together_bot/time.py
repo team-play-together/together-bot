@@ -7,7 +7,7 @@ import discord
 from discord.ext import commands
 
 tz_pst = timezone(-timedelta(hours=8))
-tz_local = datetime.now(timezone.utc).astimezone().tzinfo
+tz_kst = timezone(timedelta(hours=9))
 
 
 class Time(commands.Cog):
@@ -24,21 +24,21 @@ class Time(commands.Cog):
     async def now(self, ctx):
         dt = datetime.now(timezone.utc)
         await ctx.send(
-            f"utc: {dt.isoformat(' ', 'seconds')}\npst: {dt.astimezone(tz_pst).isoformat(' ', 'seconds')}"
+            f"UTC: {dt.isoformat(' ', 'seconds')}\nPST: {dt.astimezone(tz_pst).isoformat(' ', 'seconds')}"
         )
 
     @time.command(
-        brief="입력된 시간을 UTC와 PST로 변환해서 보여줌.",
-        help="local_time에 변환할 한국 기준 시간을 입력(ex.2020-11-30 09:59PM)",
+        brief="입력된 한국 시간을 UTC와 PST로 변환해서 보여줌.",
+        help="kst_time에 변환할 한국 기준 시간을 입력(ex.2020-11-30 09:59PM)",
     )
-    async def convert(self, ctx, *, local_time: str):
+    async def convert(self, ctx, *, kst_time: str):
         try:
-            dt = parse(local_time).astimezone(tz_local)
+            dt = parse(kst_time).astimezone(tz_kst)
             await ctx.send(
-                f"utc: {dt.astimezone(timezone.utc).isoformat(' ', 'seconds')}\npst: {dt.astimezone(tz_pst).isoformat(' ', 'seconds')}"
+                f"UTC: {dt.astimezone(timezone.utc).isoformat(' ', 'seconds')}\nPST: {dt.astimezone(tz_pst).isoformat(' ', 'seconds')}"
             )
         except ValueError:
-            logging.error("unknown string format: " + local_time)
+            logging.error("unknown string format: " + kst_time)
             await ctx.send("unknown string format")
         except OverflowError:
             logging.error("date is too large")
