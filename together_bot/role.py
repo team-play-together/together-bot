@@ -46,7 +46,7 @@ class Role(commands.Cog):
     async def role(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send("Need subcommand", delete_after=15.0)
-            await ctx.message.delete(delete_after=15.0)
+            await ctx.message.delete(delay=15.0)
 
     @role.command(brief="특정 역할에 참가함.", help="name에 참가할 역할 이름을 입력함.")
     async def get(self, ctx, name: str, duration: Optional[str]):
