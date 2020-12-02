@@ -2,7 +2,6 @@ import logging
 import logging.config
 import os
 import random
-import sys
 from pathlib import Path
 
 import yaml
@@ -82,20 +81,31 @@ async def ping(ctx):
     await ctx.send("pong!")
 
 
-def setup(bot):
+@commands.command(brief="together-bot에 기여하는 방법")
+async def contribute(ctx):
+    await ctx.send(
+        "아이디어 제안, 버그 : "
+        "`https://github.com/team-play-together/together-bot/issues/new`\n"
+        "코드 기여(PR) : `https://github.com/team-play-together/together-bot/pulls`"
+    )
+
+
+def setup(bot: commands.Bot):
     bot.add_command(ping)
     bot.add_command(repo)
     bot.add_command(_random)
     bot.add_command(google)
+    bot.add_command(contribute)
+
+    together_bot.channel.setup(bot)
+    together_bot.role.setup(bot)
+    together_bot.time.setup(bot)
 
 
 def start():
     logging.info("Start bot")
     if DISCORD_BOT_TOKEN:
         setup(bot)
-        together_bot.channel.setup(bot)
-        together_bot.role.setup(bot)
-        together_bot.time.setup(bot)
         bot.run(DISCORD_BOT_TOKEN)
     else:
         logging.error("MUST NEED BOT TOKEN")
