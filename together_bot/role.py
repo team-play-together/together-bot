@@ -128,7 +128,7 @@ class Role(commands.Cog):
 
         try:
             await ctx.bot.wait_for("reaction_add", check=check, timeout=60.0)
-            role = await ctx.guild.create_role(name=name)
+            role = await ctx.guild.create_role(name=name, mentionable=True)
             await ctx.send(f"Create role {role.mention}")
         except asyncio.TimeoutError:
             await ctx.send("Timeout: Cancel to create role")
