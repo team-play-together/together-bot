@@ -8,7 +8,7 @@ from discord.ext import commands
 
 
 class Role(commands.Cog):
-    _raised_hand = "\N{RAISED HAND}"
+    _agree_emoji = "\N{White Heavy Check Mark}"
 
     def __init__(self, bot):
         self.bot = bot
@@ -86,10 +86,10 @@ class Role(commands.Cog):
         if role is not None:
             message = await ctx.send(
                 f"Exists **_{role.name}_**, assign to role, "
-                f"add Reaction {self._raised_hand}",
+                f"add Reaction {self._agree_emoji}",
                 delete_after=delay,
             )
-            await message.add_reaction(self._raised_hand)
+            await message.add_reaction(self._agree_emoji)
 
             if self.guild_message_role.get(ctx.guild) is None:
                 self.guild_message_role[ctx.guild] = {}
@@ -115,14 +115,14 @@ class Role(commands.Cog):
             return None
 
         reply = await ctx.send(
-            f"To create role '{name}', add {self._raised_hand} reaction"
+            f"To create role '{name}', add {self._agree_emoji} reaction"
         )
-        await reply.add_reaction(self._raised_hand)
+        await reply.add_reaction(self._agree_emoji)
 
         def check(reaction, user):
             return (
                 user == author
-                and str(reaction.emoji) == self._raised_hand
+                and str(reaction.emoji) == self._agree_emoji
                 and reaction.message.id == reply.id
             )
 
