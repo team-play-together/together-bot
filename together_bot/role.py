@@ -134,7 +134,6 @@ class Role(commands.Cog):
             await ctx.send("Timeout: Cancel to create role")
         finally:
             await reply.delete()
-            await ctx.message.delete()
 
     @create.error
     async def create_error(self, ctx, error):
