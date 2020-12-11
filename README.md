@@ -11,6 +11,12 @@ poetry install
 poetry run bot
 ```
 
+## Docker
+```sh
+docker build --tag bot:0.0.0 .
+docker run --rm -i -t --mount type=bind,source="$(pwd)",destination=/app bot:0.0.0
+```
+
 ## Bot permissions
 
 - Manage Role
@@ -23,3 +29,4 @@ poetry run bot
 ```text
 268512320
 ```
+
