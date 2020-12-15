@@ -1,5 +1,4 @@
 FROM python:3.8.6
-LABEL maintainer="StaySharp0@gmail.com"
 
 # Install poetry
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
@@ -10,6 +9,9 @@ RUN poetry config virtualenvs.create false
 WORKDIR /app
 COPY pyproject.toml /app/
 COPY poetry.lock /app/
-RUN poetry install
+RUN poetry install --no-dev -n
+
+COPY logging.yml /app/
+COPY together_bot/ /app/together_bot/
 
 ENTRYPOINT ["poetry", "run", "bot"]
