@@ -12,16 +12,23 @@ poetry run bot
 ```
 
 ## Docker
+
 ```sh
-docker build --tag bot:0.0.0 .
-docker run --rm -i -t --mount type=bind,source="$(pwd)",destination=/app bot:0.0.0
+docker build --tag bot .
+
+# Run Bot wih .env file
+docker run --env-file .env -it --rm bot
+# Or run with `--env`
+docker run -e DISCORD_BOT_TOKEN=<BOT_TOKEN> -it --rm bot
+
+# For development
+docker run --rm -it --mount type=bind,source="$(pwd)",destination=/app --env-file .env --entrypoint bash bot
 ```
 
 ## Bot permissions
 
 - Manage Role
 - Send messages
-- Manage messages
 - Read message history
 - Add reactions
 - View Channel
@@ -29,4 +36,3 @@ docker run --rm -i -t --mount type=bind,source="$(pwd)",destination=/app bot:0.0
 ```text
 268512320
 ```
-
