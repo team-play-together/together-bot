@@ -14,4 +14,4 @@ RUN poetry install --no-dev -n
 COPY logging.yml /app/
 COPY together_bot/ /app/together_bot/
 
-ENTRYPOINT ["poetry", "run", "bot"]
+CMD ["python", "-m", "together_bot"]

@@ -22,7 +22,7 @@ docker run --env-file .env -it --rm bot
 docker run -e DISCORD_BOT_TOKEN=<BOT_TOKEN> -it --rm bot
 
 # For development
-docker run --rm -it --mount type=bind,source="$(pwd)",destination=/app --env-file .env --entrypoint bash bot
+docker run --rm -it --mount type=bind,source="$(pwd)",destination=/app --env-file .env bot bash
 ```
 
 ## Bot permissions
