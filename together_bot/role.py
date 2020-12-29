@@ -1,17 +1,18 @@
-import logging
 import asyncio
-from typing import Dict, Optional
+import logging
 import re
+from typing import Dict, Optional
 
 import discord
 from discord.ext import commands
+from discord.ext.commands.core import Command
 
 
 class Role(commands.Cog):
     _agree_emoji = "\N{White Heavy Check Mark}"
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: commands.Bot):
+        self.bot: commands.Bot = bot
         self.guild_message_role: Dict[discord.Guild, Dict[int, discord.Role]] = {}
 
     @commands.Cog.listener()
@@ -43,7 +44,7 @@ class Role(commands.Cog):
                     await user.remove_roles(role)
 
     @commands.group(brief="역할 관련 명령어 모음.")
-    async def role(self, ctx):
+    async def role(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send("Need subcommand", delete_after=15.0)
             await ctx.message.delete(delay=15.0)
@@ -53,7 +54,7 @@ class Role(commands.Cog):
         help="""name에 참가할 역할 이름을 입력함.
     role get \"role with space\" 10m""",
     )
-    async def get(self, ctx, name: str, duration: Optional[str]):
+    async def get(self, ctx: commands.Context, name: str, duration: Optional[str]):
         logging.info(f"Call get commands with name: `{name}`, duration: `{duration}`")
 
         def convert_to_seconds(time_duration: str):
@@ -98,13 +99,13 @@ class Role(commands.Cog):
             await ctx.message.delete(delay=delay)
 
     @get.error
-    async def get_error(self, ctx, error):
+    async def get_error(self, ctx: commands.Context, error: commands.CommandError):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("`role get {role}`, role name must need", delete_after=10.0)
             await ctx.message.delete()
 
     @role.command(brief="역할을 생성함.", help="name에 생성할 역할의 이름을 입력함.")
-    async def create(self, ctx, *, name: str):
+    async def create(self, ctx: commands.Context, *, name: str):
         author = ctx.author
         guild = ctx.guild
 
@@ -119,7 +120,7 @@ class Role(commands.Cog):
         )
         await reply.add_reaction(self._agree_emoji)
 
-        def check(reaction, user):
+        def check(reaction: discord.Reaction, user: discord.User):
             return (
                 user == author
                 and str(reaction.emoji) == self._agree_emoji
@@ -136,25 +137,25 @@ class Role(commands.Cog):
             await reply.delete()
 
     @create.error
-    async def create_error(self, ctx, error):
+    async def create_error(self, ctx: commands.Context, error: commands.CommandError):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("To create : `role create {role}`", delete_after=10.0)
             await ctx.message.delete()
 
     @role.command(brief="TBD")
-    async def list(self, ctx):
+    async def list(self, ctx: commands.Context):
         pass
 
     @role.command(brief="TBD")
-    async def delete(self, ctx, *, name: str):
+    async def delete(self, ctx: commands.Context, *, name: str):
         pass
 
     @role.command(brief="TBD")
-    async def cleanup(self, ctx):
+    async def cleanup(self, ctx: commands.Context):
         pass
 
     @role.command(brief="특정 역할에 속한 사람들의 이름을 전부 출력함.", help="name에 보고 싶은 역할의 이름을 입력함.")
-    async def members(self, ctx, name: str):
+    async def members(self, ctx: commands.Context, name: str):
         logging.info(f"Call members commands with name: `{name}`")
         guild = ctx.guild
 
@@ -166,7 +167,7 @@ class Role(commands.Cog):
             await ctx.send(f"Members of `{role.name}`: {member_names}")
 
     @members.error
-    async def members_error(self, ctx, error):
+    async def members_error(self, ctx: commands.Context, error: commands.CommandError):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(
                 "To list members of the role : `role members {role}`", delete_after=10.0
@@ -174,5 +175,5 @@ class Role(commands.Cog):
             await ctx.message.delete()
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_cog(Role(bot))
