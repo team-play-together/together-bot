@@ -4,7 +4,7 @@
     "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
     "files.exclude": {
-        ".venv": true
+        ".venv": true,
+        "**/__pycache__": true
     },
-    "python.pythonPath": ".venv\\Scripts\\python.exe",
 }
