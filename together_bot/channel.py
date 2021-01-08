@@ -4,13 +4,13 @@ from discord.ext import commands
 
 
 @commands.group(brief="TBD")
-async def channel(ctx):
+async def channel(ctx: commands.Context):
     if ctx.invoked_subcommand is None:
         await ctx.send("Need subcommand")
 
 
 @channel.command(brief="TBD")
-async def create(ctx, *, name: str):
+async def create(ctx: commands.Context, *, name: str):
     # text channel format : no space, use `-`
     # voice channel name : can include space
     channel = ctx.channel
@@ -25,5 +25,5 @@ async def create(ctx, *, name: str):
         await ctx.message.delete()
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_command(channel)

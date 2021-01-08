@@ -2,6 +2,10 @@
     "recommendations": [
         "ms-python.python",
         "editorconfig.editorconfig",
-        "ms-python.vscode-pylance"
+        "ms-python.vscode-pylance",
+        "bungcip.better-toml",
+        "ms-azuretools.vscode-docker",
+        "mikestead.dotenv",
+        "redhat.vscode-yaml"
     ]
 }

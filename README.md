@@ -4,6 +4,13 @@
 
 - [poetry](https://github.com/python-poetry/poetry)
 
+## Configuration
+
+```console
+# create .venv in workspace
+poetry config virtualenvs.in-project true
+```
+
 ## Run
 
 ```sh
