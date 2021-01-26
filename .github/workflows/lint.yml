@@ -1,4 +1,4 @@
-name: Use black
+name: Lint
 
 on: [push, pull_request]
 
@@ -8,4 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - uses: isort/isort-action@master
       - uses: psf/black@stable
