@@ -13,6 +13,7 @@ import together_bot.commands
 import together_bot.role
 import together_bot.time
 import together_bot.weather
+import together_bot.fword
 
 ROOT_DIR = Path(__file__).parent.parent
 CONFIG_PATH = os.path.join(ROOT_DIR, "logging.yml")
@@ -54,6 +55,7 @@ def setup(bot: commands.Bot):
     together_bot.role.setup(bot)
     together_bot.time.setup(bot)
     together_bot.weather.setup(bot)
+    together_bot.fword.setup(bot)
 
 
 def start():
