@@ -10,10 +10,10 @@ from dotenv import load_dotenv
 
 import together_bot.channel
 import together_bot.commands
+import together_bot.fword
 import together_bot.role
 import together_bot.time
 import together_bot.weather
-import together_bot.fword
 
 ROOT_DIR = Path(__file__).parent.parent
 CONFIG_PATH = os.path.join(ROOT_DIR, "logging.yml")

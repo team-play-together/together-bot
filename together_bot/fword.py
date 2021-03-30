@@ -1,9 +1,10 @@
-from typing import Iterable
-from discord.ext import commands
-import discord
 import csv
 import logging
 import time
+from typing import Iterable
+
+import discord
+from discord.ext import commands
 
 
 # 원래는 컨벤션에 따라 f랑 word를 구분해야 하지만 명령어에서 구분하지 않기 때문에 일관성을 위해 코드에서도 구분하지 않음.
