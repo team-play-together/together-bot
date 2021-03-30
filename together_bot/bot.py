@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 import together_bot.channel
 import together_bot.commands
+import together_bot.fword
 import together_bot.role
 import together_bot.time
 import together_bot.weather
@@ -54,6 +55,7 @@ def setup(bot: commands.Bot):
     together_bot.role.setup(bot)
     together_bot.time.setup(bot)
     together_bot.weather.setup(bot)
+    together_bot.fword.setup(bot)
 
 
 def start():
