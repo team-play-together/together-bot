@@ -1,10 +1,15 @@
 import csv
 import logging
+import os
 import time
 from typing import Iterable
 
 import discord
 from discord.ext import commands
+
+FWORD_LIST_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "fword_list.csv")
+)
 
 
 # 원래는 컨벤션에 따라 f랑 word를 구분해야 하지만 명령어에서 구분하지 않기 때문에 일관성을 위해 코드에서도 구분하지 않음.
@@ -12,7 +17,7 @@ class Fword(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot: commands.Bot = bot
         self.target_user_ids: set[int] = set()
-        self.__load_words_file("fword_list.csv")
+        self.__load_words_file(FWORD_LIST_PATH)
 
     @commands.group(brief="비속어 탐지기")
     async def fword(self, ctx: commands.Context):
@@ -79,7 +84,10 @@ class Fword(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(Fword(bot))
+    if os.path.exists(FWORD_LIST_PATH):
+        bot.add_cog(Fword(bot))
+    else:
+        logging.warning("Skip to add fword command")
 
 
 class TrieNode:
