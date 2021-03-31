@@ -84,7 +84,10 @@ class Fword(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(Fword(bot))
+    if os.path.exists(FWORD_LIST_PATH):
+        bot.add_cog(Fword(bot))
+    else:
+        logging.warning("Skip to add fword command")
 
 
 class TrieNode:
