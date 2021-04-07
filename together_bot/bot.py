@@ -1,6 +1,6 @@
 import logging
 import logging.config
-import os
+from os import getenv
 from pathlib import Path
 
 import discord
@@ -16,13 +16,13 @@ import together_bot.time
 import together_bot.weather
 
 ROOT_DIR = Path(__file__).parent.parent
-CONFIG_PATH = os.path.join(ROOT_DIR, "logging.yml")
+CONFIG_PATH = ROOT_DIR.joinpath("logging.yml")
 with open(CONFIG_PATH) as f:
     logging.config.dictConfig(yaml.safe_load(f))
 
 load_dotenv()
 
-DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+DISCORD_BOT_TOKEN = getenv("DISCORD_BOT_TOKEN")
 
 intents = discord.Intents.default()
 intents.members = True
