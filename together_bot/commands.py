@@ -37,7 +37,10 @@ async def namu(ctx: commands.Context, *args):
     query = " ".join(args)
 
     # namu.wiki 상에서 임의로 변경되는 url escape characters
-    query = query.replace("%", "%25").replace("\\", "%5C")
+    namu_wiki_escape_code_dict = {"%": "%25", "\\": "%5C"}
+    for character, escape_code in namu_wiki_escape_code_dict.items():
+        query = query.replace(character, escape_code)
+
     # discord 상에서 링크 클릭으로 접속 가능하도록 blank를 '%20'으로 변경
     query = query.replace(" ", "%20")
 
