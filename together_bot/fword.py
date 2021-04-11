@@ -1,15 +1,14 @@
 import csv
 import logging
-import os
 import time
+from pathlib import Path
 from typing import Iterable
 
 import discord
 from discord.ext import commands
 
-FWORD_LIST_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "fword_list.csv")
-)
+ROOT_DIR = Path(__file__).parent.parent
+FWORD_LIST_PATH = ROOT_DIR.joinpath("fword_list.csv")
 
 
 # 원래는 컨벤션에 따라 f랑 word를 구분해야 하지만 명령어에서 구분하지 않기 때문에 일관성을 위해 코드에서도 구분하지 않음.
@@ -84,7 +83,7 @@ class Fword(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    if os.path.exists(FWORD_LIST_PATH):
+    if FWORD_LIST_PATH.exists():
         bot.add_cog(Fword(bot))
     else:
         logging.warning("Skip to add fword command")
