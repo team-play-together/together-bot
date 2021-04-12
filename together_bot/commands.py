@@ -33,7 +33,9 @@ async def google(ctx: commands.Context, *args):
 
 
 @commands.command(brief="나무위키 검색 결과의 url을 출력함.", help="args에 검색할 내용을 넣으면 됨.")
-async def namu(ctx: commands.Context, *, query):
+async def namu(ctx: commands.Context, *args):
+    query = " ".join(args)
+
     # namu.wiki 상에서 임의로 변경되는 url escape characters
     namu_wiki_escape_code_dict = {"%": "%25", "\\": "%5C", " ": "%20", "#": "%23", "?": "%3F"}
     for character, escape_code in namu_wiki_escape_code_dict.items():
