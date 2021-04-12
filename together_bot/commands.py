@@ -40,7 +40,7 @@ async def namu(ctx: commands.Context, *, query):
         "\\": "%5C",
         " ": "%20",
         "#": "%23",
-        "?": "%3F"
+        "?": "%3F",
     }
     for character, escape_code in namu_wiki_escape_code_dict.items():
         query = query.replace(character, escape_code)
