@@ -32,6 +32,22 @@ async def google(ctx: commands.Context, *args):
     await ctx.send(f"https://www.google.com/search?q={query}")
 
 
+@commands.command(brief="나무위키 검색 결과의 url을 출력함.", help="args에 검색할 내용을 넣으면 됨.")
+async def namu(ctx: commands.Context, *, query):
+    # namu.wiki 상에서 임의로 변경되는 url escape characters
+    namu_wiki_escape_code_dict = {
+        "%": "%25",
+        "\\": "%5C",
+        " ": "%20",
+        "#": "%23",
+        "?": "%3F",
+    }
+    for character, escape_code in namu_wiki_escape_code_dict.items():
+        query = query.replace(character, escape_code)
+
+    await ctx.send(f"https://namu.wiki/w/{query}")
+
+
 @commands.command(
     brief="봇이 탁구를 쳐줍니다. 실행 중이라면 무조건 받아칩니다.",
     help="봇이 실행 중이라면 pong을 출력함.\n(근데 봇이 죽어있으면 help도 안 나오는데 핑을 설명해 줘야해?)",
@@ -54,4 +70,5 @@ def setup(bot: commands.Bot):
     bot.add_command(repo)
     bot.add_command(_random)
     bot.add_command(google)
+    bot.add_command(namu)
     bot.add_command(contribute)
