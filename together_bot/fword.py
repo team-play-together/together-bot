@@ -66,7 +66,8 @@ class Fword(commands.Cog):
             lower = bound[0]
             upper = bound[1]
             if check(lower, upper):
-                char_list[lower:upper] = ["\\*"] * (upper - lower)
+                char_list[lower] = "||" + char_list[lower]
+                char_list[upper - 1] = char_list[upper - 1] + "||"
 
         return "".join(char_list)
 
