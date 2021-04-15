@@ -25,7 +25,7 @@ class Fword(commands.Cog):
             await ctx.message.delete(delay=15.0)
 
     @fword.command(brief="자신의 메세지에 대한 감시를 켜고 끔", help="is_on에 on 또는 off 입력")
-    async def watch(self, ctx: commands.Context, is_on: str):
+    async def watch(self, ctx: commands.Context, is_on: str = "on"):
         is_on = is_on.lower()
         author_id = ctx.author.id
         author_display_name = ctx.author.display_name
@@ -55,19 +55,14 @@ class Fword(commands.Cog):
             await message.delete()
             await message.channel.send(f"{message.author.display_name}: {censored}")
 
-    def __censor(self, content: str, bounds: Iterable[tuple[int, int]]):
-        # bounds 안의 범위들은 반드시 [n,m) 이고, n <= m 임.
-        def check(lower: int, upper: int):
-            # 0 <= lower < upper <= len(content)
-            return lower >= 0 and lower < upper and upper <= len(content)
-
+    def __censor(self, content: str, bounds: Iterable[range]) -> str:
         char_list = [*content]
         for bound in bounds:
-            lower = bound[0]
-            upper = bound[1]
-            if check(lower, upper):
-                char_list[lower] = "||" + char_list[lower]
-                char_list[upper - 1] = char_list[upper - 1] + "||"
+            start = bound.start
+            stop = bound.stop
+            if 0 <= start < stop <= len(content):
+                char_list[start] = "||" + char_list[start]
+                char_list[stop - 1] = char_list[stop - 1] + "||"
 
         return "".join(char_list)
 
@@ -113,8 +108,7 @@ class Trie:
         # empty string을 가리키는 root부터 시작
         current_node = self.root
 
-        for index in range(0, len(new_value)):
-            char = new_value[index]
+        for index, char in enumerate(new_value):
             # 만약 현재 글자에 해당되는 자식이 없다면, 2번 조건이 만족되는 위치다. 따라서 이 노드가 3번 조건에 해당되는지 확인한다.
             if char not in current_node.child:
                 current_node.child[char] = TrieNode(None)
@@ -158,8 +152,8 @@ class Trie:
             return current_node.value == value
         return False
 
-    def find_all_occurrences(self, sentence: str):
-        occurrences: list[tuple[int, int]] = []
+    def find_all_occurrences(self, sentence: str) -> list[range]:
+        occurrences: list[range] = []
         if sentence is None:
             return None
 
@@ -169,6 +163,7 @@ class Trie:
             # 부분 문자열을 읽으면서 가장 비슷한 비속어를 탐색함.
             index = substr_start
             current_node = self.root
+            match = None
             while index < len(sentence):
                 c = sentence[index]
                 if c not in current_node.child:
@@ -176,14 +171,16 @@ class Trie:
 
                 current_node = current_node.child[c]
                 index += 1
+                # 루트 노드는 무시하고 다음 레벨부터 비슷한 비속어를 저장함.
+                if current_node.value is not None:
+                    match = current_node.value
 
             # 만약 일치하면 단어 범위를 리스트에 추가 후 그 다음부터 재탐색
             # 아니면 시작지점에서 한 칸 전진하고 재탐색
-            match = current_node.value
             if match is not None:
                 substr_end = substr_start + len(match)
                 if sentence[substr_start:substr_end] == match:
-                    occurrences.append((substr_start, substr_end))
+                    occurrences.append(range(substr_start, substr_end))
                     substr_start = substr_end
                     continue
             substr_start = substr_start + 1
