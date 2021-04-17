@@ -17,17 +17,37 @@ def main() -> None:
     parser = init_argparse()
     args = parser.parse_args()
 
+    ignored_fword = ["캐시", "캐쉬", "010"]
+    # 여기 단어가 포함된 모든 비속어를 제거하고, 여기 단어만 추가함.
+    # 이 단어가 포함된 것 만으로도 비속어이고, 접두어나 접미사 이외로도 쓸 수 있는 경우에 해당됨.
+    compressed_fword = [
+        "섹스",
+        "sex",
+        "포르노",
+        "porno",
+        "몰카",
+        "molca",
+        "와레즈",
+        "warez",
+        "성인용품",
+    ]
+
     words = set()
     with open(args.input_file, "r", encoding="utf-8", newline="") as file:
         csv_reader = csv.reader(file, skipinitialspace=True)
         for row in csv_reader:
             for elem in row:
                 elem = elem.strip().casefold()
+                if any(ignored in elem for ignored in ignored_fword):
+                    continue
+                if any(compressed in elem for compressed in compressed_fword):
+                    continue
                 words.add(elem)
-
+    words.update(compressed_fword)
+    sorted_words = sorted(words)
     with open(args.output_file, "w", encoding="utf-8", newline="") as file:
         csv_writer = csv.writer(file)
-        for word in words:
+        for word in sorted_words:
             csv_writer.writerow([word])
 
 
