@@ -100,12 +100,12 @@ class Keyword(commands.Cog):
         mentionList=[]
         # 입력된 메시지와 등록된 키워드를 확인하며 mention할 유저가 있는지 확인함
         for keyword in self.keywordDict.keys():
-            if Keyword.kmp(message.content,keyword):
+            if self.getUserListBykeyword(keyword) and Keyword.kmp(message.content,keyword):
                 mentionList.append({"keyword":keyword, "userIDs":self.getUserListBykeyword(keyword)})
 
         if not mentionList:
             return
-       
+        print(mentionList)       
         for mention in mentionList:
             mentionText=""
             for userID in mention["userIDs"]:
