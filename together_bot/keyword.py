@@ -105,7 +105,6 @@ class Keyword(commands.Cog):
 
         if not mentionList:
             return
-        print(mentionList)       
         for mention in mentionList:
             mentionText=""
             for userID in mention["userIDs"]:
