@@ -90,7 +90,8 @@ class Keyword(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         # 봇 관련 채팅은 무시
-        if message.content.startswith("!"):
+        ctx = await self.bot.get_context(message)
+        if ctx.valid:
             return
         if message.author.bot:
             return
