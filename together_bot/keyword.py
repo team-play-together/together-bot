@@ -13,14 +13,20 @@ class Keyword(commands.Cog):
         self.keywordDict = {}
 
     @commands.group(
-        brief="사용자가 특정 키워드를 입력했을 때 봇이 자신을 mention하게 등록",
-        help="자신에게 등록할 키워드를 설정하는 명령어입니다",
+        brief="사용자가 특정 키워드를 입력했을 때 봇이 자신을 mention하게 등록함",
     )
     async def keyword(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
             await ctx.send("자세한 명령어는 `help keyword`")
 
-    @keyword.command(brief="자신의 키워드에 KEYWORD를 등록합니다.", help="`!keyword add KEYWORD`")
+    @keyword.command(brief="자신에게mention 등록된 키워드 조회", help="사용법: `!keyword list`")
+    async def list(self, ctx: commands.Context):
+        keywordsByUserID = self.getKeywordsByUserID(ctx.author.id)
+        keywordsMsg=", ".join(f"`{keyword}`" for keyword in keywordsByUserID)
+        msg=f"`{ctx.author.display_name}` 사용자에게 등록된 키워드 : {keywordsMsg}"
+        await ctx.send(msg)
+
+    @keyword.command(brief="자신의 키워드에 KEYWORD를 등록합니다.", help="사용법: `!keyword add KEYWORD` (공백 허용 안 함)")
     async def add(self, ctx: commands.Context, keyword: str):
         # 등록 가능한 키워드의 길이가 MAX_KEYWORD_LENGTH(20)을 초과할 경우 등록할 수 없게 제한
         if len(keyword) > Keyword.MAX_KEYWORD_LENGTH:
@@ -49,7 +55,7 @@ class Keyword(commands.Cog):
             )
 
     @keyword.command(
-        brief="자신에게 등록된 키워드 중 KEYWORD를 삭제합니다.", help="`!keyword delete KEYWORD`"
+        brief="자신에게 등록된 키워드 중 KEYWORD를 삭제합니다.", help="사용법: `!keyword delete KEYWORD`"
     )
     async def delete(self, ctx: commands.Context, keyword: str):
         keywordsByUserID = self.getKeywordsByUserID(ctx.author.id)
