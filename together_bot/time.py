@@ -25,10 +25,10 @@ class Time(commands.Cog):
     async def now(self, ctx: commands.Context):
         try:
             response = self.ntp_client.request(TIME_SERVER, version=3)
-            dt = datetime.fromtimestamp(response.orig_time, timezone.utc)
+            dt = from_utc_timestamp(response.orig_time)
             await ctx.send(
-                f"UTC: {dt.isoformat(' ', 'seconds')}\n"
-                + f"PST: {dt.astimezone(tz_pst).isoformat(' ', 'seconds')}\n"
+                f"UTC: {to_utc_time_format(dt)}\n"
+                + f"PST: {to_pst_time_format(dt)}\n"
                 + f"이 정보는 `{TIME_SERVER}` 로부터 제공받았습니다."
             )
         except ntplib.NTPException:
@@ -41,10 +41,10 @@ class Time(commands.Cog):
     )
     async def convert(self, ctx: commands.Context, *, kst_time: str):
         try:
-            dt = parse(kst_time, ignoretz=True).astimezone(tz_kst)
+            dt = from_kst_time_string(kst_time)
             await ctx.send(
-                f"UTC: {dt.astimezone(timezone.utc).isoformat(' ', 'seconds')}\n"
-                + f"PST: {dt.astimezone(tz_pst).isoformat(' ', 'seconds')}"
+                f"UTC: {to_utc_time_format(dt)}\n"
+                + f"PST: {to_pst_time_format(dt)}"
             )
         except ValueError:
             logging.error("unknown string format: " + kst_time)
@@ -52,6 +52,22 @@ class Time(commands.Cog):
         except OverflowError:
             logging.error("date is too large")
             await ctx.send("date is too large")
+
+
+def from_utc_timestamp(timestamp: int) -> datetime:
+    return datetime.fromtimestamp(timestamp, timezone.utc)
+
+
+def to_utc_time_format(dt: datetime) -> str:
+    return dt.astimezone(timezone.utc).isoformat(' ', 'seconds')
+
+
+def to_pst_time_format(dt: datetime) -> str:
+    return dt.astimezone(tz_pst).isoformat(' ', 'seconds')
+
+
+def from_kst_time_string(kst_time: str):
+    return parse(kst_time, ignoretz=True).astimezone(tz_kst)
 
 
 def setup(bot: commands.Bot):
