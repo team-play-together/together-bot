@@ -15,9 +15,9 @@ ntplib = "^0.3.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
-black = { git = "https://github.com/psf/black.git", tag = "stable" }
+black = "21.5b1"
 flake8 = "^3.8.3"
-isort = { git = "https://github.com/PyCQA/isort.git", branch = "main" }
+isort = "5.8.0"
 mypy = "^0.790"
 
 [tool.poetry.scripts]
