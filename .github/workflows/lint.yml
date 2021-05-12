@@ -10,5 +10,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.x'
-      - uses: isort/isort-action@5.8.0
+      - uses: isort/isort-action@master
+        with:
+          isortVersion: '5.8.0'
       - uses: psf/black@21.5b1
