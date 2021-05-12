@@ -43,8 +43,7 @@ class Time(commands.Cog):
         try:
             dt = from_kst_time_string(kst_time)
             await ctx.send(
-                f"UTC: {to_utc_time_format(dt)}\n"
-                + f"PST: {to_pst_time_format(dt)}"
+                f"UTC: {to_utc_time_format(dt)}\n" + f"PST: {to_pst_time_format(dt)}"
             )
         except ValueError:
             logging.error("unknown string format: " + kst_time)
@@ -59,11 +58,11 @@ def from_utc_timestamp(timestamp: int) -> datetime:
 
 
 def to_utc_time_format(dt: datetime) -> str:
-    return dt.astimezone(timezone.utc).isoformat(' ', 'seconds')
+    return dt.astimezone(timezone.utc).isoformat(" ", "seconds")
 
 
 def to_pst_time_format(dt: datetime) -> str:
-    return dt.astimezone(tz_pst).isoformat(' ', 'seconds')
+    return dt.astimezone(tz_pst).isoformat(" ", "seconds")
 
 
 def from_kst_time_string(kst_time: str):
