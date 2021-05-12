@@ -11,4 +11,6 @@ jobs:
         with:
           python-version: '3.x'
       - uses: isort/isort-action@master
-      - uses: psf/black@stable
+        with:
+          isortVersion: '5.8.0'
+      - uses: psf/black@21.5b1
