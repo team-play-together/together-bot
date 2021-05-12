@@ -5,7 +5,6 @@ from typing import Dict, Optional
 
 import discord
 from discord.ext import commands
-from discord.ext.commands.core import Command
 
 
 class Role(commands.Cog):
@@ -29,8 +28,8 @@ class Role(commands.Cog):
             return
 
         if reaction.message.guild is not None:
-            if (message_role := self.guild_message_role.get(reaction.message.guild)) :
-                if (role := message_role.get(reaction.message.id)) :
+            if message_role := self.guild_message_role.get(reaction.message.guild):
+                if role := message_role.get(reaction.message.id):
                     await user.add_roles(role)
 
     @commands.Cog.listener()
@@ -39,8 +38,8 @@ class Role(commands.Cog):
             return
 
         if reaction.message.guild is not None:
-            if (message_role := self.guild_message_role.get(reaction.message.guild)) :
-                if (role := message_role.get(reaction.message.id)) :
+            if message_role := self.guild_message_role.get(reaction.message.guild):
+                if role := message_role.get(reaction.message.id):
                     await user.remove_roles(role)
 
     @commands.group(brief="역할 관련 명령어 모음.")
@@ -109,7 +108,7 @@ class Role(commands.Cog):
         author = ctx.author
         guild = ctx.guild
 
-        if (role := discord.utils.get(guild.roles, name=name)) :
+        if role := discord.utils.get(guild.roles, name=name):
             delay = 15.0
             await ctx.send(f"`{role.name}` is already exists", delete_after=delay)
             await ctx.message.delete(delay=delay)
@@ -159,7 +158,7 @@ class Role(commands.Cog):
         logging.info(f"Call members commands with name: `{name}`")
         guild = ctx.guild
 
-        if (role := discord.utils.get(guild.roles, name=name)) :
+        if role := discord.utils.get(guild.roles, name=name):
             if len(role.members) == 0:
                 await ctx.send(f"No one is in role `{role.name}`.")
                 return None
