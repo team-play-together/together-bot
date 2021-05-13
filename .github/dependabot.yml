@@ -1,15 +1,20 @@
 version: 2
 updates:
-#
+  # Python dependencies check
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     allow:
       - dependency-type: "production"
-# Set update schedule for GitHub Actions
+  # for GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       # Check for updates to GitHub Actions every weekday
-      interval: "daily"
+      interval: "weekly"
+    ignore:
+      - dependency-name: "actions/checkout"
+        versions: ["2.x"]
+      - dependency-name: "actions/setup-python"
+        versions: ["2.x"]
