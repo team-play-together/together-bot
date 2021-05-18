@@ -1,6 +1,7 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
+from dateutil.parser import ParserError
 
 from together_bot.time import (
     from_kst_time_string,
@@ -53,3 +54,68 @@ def test_from_kst_time_string_with_ignoretz():
     assert from_kst_time_string("2021-03-31 17:17:01+00:00") == datetime(
         2021, 3, 31, 17, 17, 1, tzinfo=tz_kst
     )
+
+
+@pytest.mark.parametrize(
+    "kst_time",
+    [
+        "10000-02-11 17:48",
+        "2021-13-22 12:11",
+        "2021-03-32 17:17",
+        "2021-02-31",
+        "2021-02-28 25:00",
+        "2021-03-01 09:70",
+    ],
+)
+def test_kst_time_wrong_date(kst_time):
+    with pytest.raises(ValueError):
+        from_kst_time_string(kst_time)
+
+
+@pytest.mark.parametrize(
+    "kst_time",
+    [
+        datetime.min.isoformat(),
+        datetime.max.isoformat(),
+    ],
+)
+def test_kst_time_overflow_by_timezone_change(kst_time):
+    with pytest.raises(OSError):
+        dt = from_kst_time_string(kst_time)
+        dt.astimezone(timezone(timedelta(hours=8)))  # KST-1
+        dt.astimezone(timezone(timedelta(hours=10)))  # KST+1
+
+
+@pytest.mark.parametrize(
+    "kst_time, expected_error",
+    [("1523443804214.0", OverflowError), (4.25, TypeError), ("-43201", ParserError)],
+)
+def test_kst_time_invalid_arguments(kst_time, expected_error):
+    with pytest.raises(expected_error):
+        from_kst_time_string(kst_time)
+
+
+@pytest.mark.parametrize(
+    "timestamp",
+    [
+        float("inf"),
+        float("-inf"),
+    ],
+)
+def test_timestamp_overflow(timestamp):
+    with pytest.raises(OverflowError):
+        print(from_utc_timestamp(timestamp))
+
+
+# issue 63 참조
+@pytest.mark.parametrize(
+    "timestamp",
+    [
+        2 ** 60,
+        -43201,
+        1523443804214.0,
+    ],
+)
+def test_wrong_timestamp(timestamp):
+    with pytest.raises(OSError):
+        from_utc_timestamp(timestamp)
