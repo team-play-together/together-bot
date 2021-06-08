@@ -199,7 +199,7 @@ python-versions = "*"
 
 [[package]]
 name = "ntplib"
-version = "0.3.4"
+version = "0.4.0"
 description = "Python NTP library"
 category = "main"
 optional = false
@@ -373,7 +373,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "41eb30c7ef9229549c0599e68b292b80207fb43dbf604ef9f974d557ef8f1bd2"
+content-hash = "0e70495e452a2c064439d8ff24d189673e9be5ccb73ced0158530379644121aa"
 
 [metadata.files]
 aiohttp = [
@@ -531,9 +531,8 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 ntplib = [
-    {file = "ntplib-0.3.4-py2-none-any.whl", hash = "sha256:1c0ca99485a1abf64db7a5b7502874f255666d219aacfb7ad701ea83e78e2dcf"},
-    {file = "ntplib-0.3.4-py3-none-any.whl", hash = "sha256:63b99b0ac670f8283b8d8e5cf75aab1d0d9f62e17d38d1fedc4291e1ce8bd052"},
-    {file = "ntplib-0.3.4.tar.gz", hash = "sha256:9fc99f71b14641b31698e4ced3d5f974eec225bfbae089ebe44b5808ba890f71"},
+    {file = "ntplib-0.4.0-py2.py3-none-any.whl", hash = "sha256:8d27375329ed7ff38755f7b6d4658b28edc147cadf40338a63a0da8133469d60"},
+    {file = "ntplib-0.4.0.tar.gz", hash = "sha256:899d8fb5f8c2555213aea95efca02934c7343df6ace9d7628a5176b176906267"},
 ]
 packaging = [
     {file = "packaging-20.9-py2.py3-none-any.whl", hash = "sha256:67714da7f7bc052e064859c05c595155bd1ee9f69f76557e21f051443c20947a"},
