@@ -80,7 +80,7 @@ def test_kst_time_wrong_date(kst_time):
     ],
 )
 def test_kst_time_overflow_by_timezone_change(kst_time):
-    with pytest.raises(OSError):
+    with pytest.raises(OverflowError):
         dt = from_kst_time_string(kst_time)
         dt.astimezone(timezone(timedelta(hours=8)))  # KST-1
         dt.astimezone(timezone(timedelta(hours=10)))  # KST+1
@@ -105,17 +105,3 @@ def test_kst_time_invalid_arguments(kst_time, expected_error):
 def test_timestamp_overflow(timestamp):
     with pytest.raises(OverflowError):
         print(from_utc_timestamp(timestamp))
-
-
-# issue 63 참조
-@pytest.mark.parametrize(
-    "timestamp",
-    [
-        2 ** 60,
-        -43201,
-        1523443804214.0,
-    ],
-)
-def test_wrong_timestamp(timestamp):
-    with pytest.raises(OSError):
-        from_utc_timestamp(timestamp)

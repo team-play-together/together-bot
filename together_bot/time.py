@@ -81,7 +81,7 @@ def to_pst_time_format(dt: datetime) -> str:
 
 
 def from_kst_time_string(kst_time: str):
-    return parse(kst_time, ignoretz=True).astimezone(tz_kst)
+    return parse(kst_time, ignoretz=True).replace(tzinfo=tz_kst)
 
 
 def setup(bot: commands.Bot):
