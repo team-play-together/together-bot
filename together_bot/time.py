@@ -58,7 +58,7 @@ class Time(commands.Cog):
             logging.error("unknown string format: " + kst_time)
             await ctx.send("unknown string format")
         except TypeError:
-            logging.error("wrong type: " + type(kst_time))
+            logging.error("wrong type: " + str(type(kst_time)))
             await ctx.send("unknown string format")
         except OSError:
             logging.error("changing timezone failed")
@@ -80,7 +80,7 @@ def to_pst_time_format(dt: datetime) -> str:
     return dt.astimezone(tz_pst).isoformat(" ", "seconds")
 
 
-def from_kst_time_string(kst_time: str):
+def from_kst_time_string(kst_time: str) -> datetime:
     return parse(kst_time, ignoretz=True).replace(tzinfo=tz_kst)
 
 
