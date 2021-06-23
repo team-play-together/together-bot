@@ -2,7 +2,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 
 import ntplib
-from dateutil.parser import parse
+from dateutil.parser import ParserError, parse
 from discord.ext import commands
 
 tz_pst = timezone(-timedelta(hours=8))
@@ -34,6 +34,12 @@ class Time(commands.Cog):
         except ntplib.NTPException:
             logging.error("NTP server doesn't respond")
             await ctx.send("NTP 서버에 연결할 수 없습니다. 나중에 다시 시도해주세요.")
+        except OverflowError:
+            logging.error("Timestamp overflow")
+            await ctx.send("잠시 후 다시 시도해주세요.")
+        except OSError:
+            logging.error("OS can't recognize timestamp")
+            await ctx.send("잠시 후 다시 시도해주세요.")
 
     @time.command(
         brief="입력된 한국 시간을 UTC와 PST로 변환해서 보여줌.",
@@ -48,6 +54,15 @@ class Time(commands.Cog):
         except ValueError:
             logging.error("unknown string format: " + kst_time)
             await ctx.send("unknown string format")
+        except ParserError:
+            logging.error("unknown string format: " + kst_time)
+            await ctx.send("unknown string format")
+        except TypeError:
+            logging.error("wrong type: " + str(type(kst_time)))
+            await ctx.send("unknown string format")
+        except OSError:
+            logging.error("changing timezone failed")
+            await ctx.send("convert failed")
         except OverflowError:
             logging.error("date is too large")
             await ctx.send("date is too large")
@@ -65,8 +80,8 @@ def to_pst_time_format(dt: datetime) -> str:
     return dt.astimezone(tz_pst).isoformat(" ", "seconds")
 
 
-def from_kst_time_string(kst_time: str):
-    return parse(kst_time, ignoretz=True).astimezone(tz_kst)
+def from_kst_time_string(kst_time: str) -> datetime:
+    return parse(kst_time, ignoretz=True).replace(tzinfo=tz_kst)
 
 
 def setup(bot: commands.Bot):
