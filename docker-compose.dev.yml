@@ -1,0 +1,9 @@
+services:
+  bot:
+    extends:
+      file: docker-compose.yml
+      service: bot
+    volumes:
+      - type: bind
+        source: .
+        target: /app
