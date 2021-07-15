@@ -51,20 +51,9 @@ class Fword(commands.Cog):
             occurrences = self.search_tree.find_all_occurrences(origin)
             if len(occurrences) == 0:
                 return
-            censored = self.__censor(origin, occurrences)
+            censored = censor(origin, occurrences)
             await message.delete()
             await message.channel.send(f"{message.author.display_name}: {censored}")
-
-    def __censor(self, content: str, bounds: Iterable[range]) -> str:
-        char_list = [*content]
-        for bound in bounds:
-            start = bound.start
-            stop = bound.stop
-            if 0 <= start < stop <= len(content):
-                char_list[start] = "||" + char_list[start]
-                char_list[stop - 1] = char_list[stop - 1] + "||"
-
-        return "".join(char_list)
 
     def __load_words_file(self, file_path: str):
         self.search_tree = Trie()
@@ -76,6 +65,18 @@ class Fword(commands.Cog):
                     self.search_tree.insert(col)
         elapsed_time = time.process_time() - timestamp_load_begin
         logging.info(f"fword list load - elapsed time: {elapsed_time}")
+
+
+def censor(content: str, bounds: Iterable[range]) -> str:
+    char_list = [*content]
+    for bound in bounds:
+        start = bound.start
+        stop = bound.stop
+        if 0 <= start < stop <= len(content):
+            char_list[start] = "||" + char_list[start]
+            char_list[stop - 1] = char_list[stop - 1] + "||"
+
+    return "".join(char_list)
 
 
 def setup(bot: commands.Bot):
@@ -100,7 +101,7 @@ class Trie:
         # 2. 만약 다음에 읽을 글자에 상관없이 해당 문자열이 유일하면 더 이상 아래로 내려가지 않는다.
         # 3. 만약 2번 조건에 의해 자신의 문자 개수보다 윗 노드에 저장된 문자열과 새로 삽입될 문자열이 충돌한다면 아래로 내려서 분기시킨다.
         if not isinstance(new_value, str):
-            return
+            raise TypeError
 
         if len(new_value) == 0:
             return
