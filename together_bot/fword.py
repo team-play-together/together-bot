@@ -5,7 +5,12 @@ from pathlib import Path
 from typing import Iterable
 
 import discord
+import sqlalchemy
 from discord.ext import commands
+from sqlalchemy.exc import IntegrityError
+
+import together_bot.models.fword_user as fword_user
+from together_bot.utils.db_toolkit import Session
 
 ROOT_DIR = Path(__file__).parent.parent
 FWORD_LIST_PATH = ROOT_DIR.joinpath("fword_list.csv")
@@ -15,8 +20,9 @@ FWORD_LIST_PATH = ROOT_DIR.joinpath("fword_list.csv")
 class Fword(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot: commands.Bot = bot
-        self.target_user_ids: set[int] = set()
+        self.user_ids: set[int] = set()
         self.__load_words_file(FWORD_LIST_PATH)
+        self.__load_users()
 
     @commands.group(brief="비속어 탐지기")
     async def fword(self, ctx: commands.Context):
@@ -30,10 +36,26 @@ class Fword(commands.Cog):
         author_id = ctx.author.id
         author_display_name = ctx.author.display_name
         if is_on == "on":
-            self.target_user_ids.add(author_id)
+            if author_id not in self.user_ids:
+                try:
+                    with Session() as session:
+                        fword_user.save(session, author_id)
+                        session.commit()
+                # discord_id가 이미 있을 때만 무시함.
+                except IntegrityError as e:
+                    if "UNIQUE constraint failed: fword_user.discord_id" not in repr(e):
+                        raise
+
+            self.user_ids.add(author_id)
             await ctx.send(f"`{author_display_name}`에 대한 비속어 탐지 켜짐")
         elif is_on == "off":
-            self.target_user_ids.discard(author_id)
+            if author_id in self.user_ids:
+                with Session() as session:
+                    user = fword_user.find_by_discord_id(session, author_id)
+                    if user is not None:
+                        session.delete(user)
+                        session.commit()
+            self.user_ids.discard(author_id)
             await ctx.send(f"`{author_display_name}`에 대한 비속어 탐지 꺼짐")
 
     @commands.Cog.listener()
@@ -41,7 +63,7 @@ class Fword(commands.Cog):
         if message.author.bot:
             return
 
-        if message.author.id not in self.target_user_ids:
+        if message.author.id not in self.user_ids:
             return
 
         # 비속어 탐지
@@ -65,6 +87,11 @@ class Fword(commands.Cog):
                     self.search_tree.insert(col)
         elapsed_time = time.process_time() - timestamp_load_begin
         logging.info(f"fword list load - elapsed time: {elapsed_time}")
+
+    def __load_users(self):
+        with Session() as session:
+            for user_id in session.query(fword_user.FwordUser.discord_id):
+                self.user_ids.add(user_id)
 
 
 def censor(content: str, bounds: Iterable[range]) -> str:
