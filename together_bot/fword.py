@@ -90,7 +90,7 @@ class Fword(commands.Cog):
 
     def __load_users(self):
         with Session() as session:
-            for user_id, in session.query(fword_user.FwordUser.discord_id):
+            for (user_id,) in session.query(fword_user.FwordUser.discord_id):
                 self.user_ids.add(user_id)
         logging.info(f"fword user list: {self.user_ids}")
 
