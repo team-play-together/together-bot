@@ -92,6 +92,7 @@ class Fword(commands.Cog):
         with Session() as session:
             for user_id, in session.query(fword_user.FwordUser.discord_id):
                 self.user_ids.add(user_id)
+        logging.info(f"fword user list: {self.user_ids}")
 
 
 def censor(content: str, bounds: Iterable[range]) -> str:
