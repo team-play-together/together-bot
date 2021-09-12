@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Iterable
 
 import discord
-import sqlalchemy
 from discord.ext import commands
 from sqlalchemy.exc import IntegrityError
 
