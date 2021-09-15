@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer
+from sqlalchemy import BigInteger, Column, Integer
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -12,7 +12,7 @@ class FwordUser(Base):
     __tablename__ = "fword_user"
 
     id = Column(Integer, primary_key=True)
-    discord_id = Column(Integer, unique=True)
+    discord_id = Column(BigInteger, unique=True)
 
 
 # 편의를 위해 만든 shortcut function임.
