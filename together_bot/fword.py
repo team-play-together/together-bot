@@ -17,9 +17,11 @@ FWORD_LIST_PATH = ROOT_DIR.joinpath("fword_list.csv")
 
 # 원래는 컨벤션에 따라 f랑 word를 구분해야 하지만 명령어에서 구분하지 않기 때문에 일관성을 위해 코드에서도 구분하지 않음.
 class Fword(commands.Cog):
+    # 매번 비속어 검사를 할 때마다 DB를 읽지 않기 위해 저장함.
+    user_ids: set[int] = set()
+
     def __init__(self, bot: commands.Bot):
         self.bot: commands.Bot = bot
-        self.user_ids: set[int] = set()
         self.__load_words_file(FWORD_LIST_PATH)
         self.__load_users()
 
@@ -91,7 +93,7 @@ class Fword(commands.Cog):
         with Session() as session:
             for (user_id,) in session.query(fword_user.FwordUser.discord_id):
                 self.user_ids.add(user_id)
-        logging.info(f"fword user list: {self.user_ids}")
+        logging.info(f"fword user count: {len(self.user_ids)}")
 
 
 def censor(content: str, bounds: Iterable[range]) -> str:
