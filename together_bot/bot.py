@@ -13,6 +13,7 @@ import together_bot.commands
 import together_bot.fword
 import together_bot.role
 import together_bot.time
+import together_bot.utils.db_toolkit as db_toolkit
 import together_bot.weather
 
 ROOT_DIR = Path(__file__).parent.parent
@@ -61,6 +62,7 @@ def setup(bot: commands.Bot):
 def start():
     logging.info("Start bot")
     if DISCORD_BOT_TOKEN:
+        db_toolkit.setup()
         setup(bot)
         bot.run(DISCORD_BOT_TOKEN)
     else:
