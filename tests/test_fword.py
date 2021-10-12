@@ -258,6 +258,23 @@ def test_find_all_incomplete_word(trie):
     assert all_match(expected, actual)
 
 
+def test_ignore_incorrect_but_found_first(trie):
+    """
+    앞부분이 먼저 검색되지만 뒷부분이 틀린 단어를 무시하고 올바른 단어를 찾을 수 있는지 확인함.
+    sentry와 ent라는 단어가 trie에 있을 때,
+    this sentence 라는 문장을 필터링하면, sentry의 sent 가 먼저 확인되기 때문에, sentry인지 확인함.
+    하지만 sentry 는 포함되지 않는 단어이기 때문에 무시하고 s 뒤에 ent를 찾을 수 있어야 함.
+    """
+    # given
+    trie.insert("sentry")
+    trie.insert("ent")
+    # when
+    actual = trie.find_all_occurrences("this sentence")
+    # then
+    expected = [range(6, 9)]
+    assert all_match(expected, actual)
+
+
 # 2. fword 명령어 관련 테스트
 # 2.a. censor 테스트
 
