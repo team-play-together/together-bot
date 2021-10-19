@@ -1,6 +1,6 @@
 import pytest
 
-from together_bot.fword import Trie, TrieNode, censor
+from together_bot.fword import FWORD_LIST_PATH, Trie, TrieNode, censor
 
 
 # Helper function
@@ -321,3 +321,38 @@ def test_censor():
     # then
     expected = "h||el||lo"
     assert actual == expected
+
+
+# 3. 비속어 리스트 테스트
+# 테스트에 대한 설명이 PR과 이슈에 적혀있기 때문에 테스트 이름을 번호로 대체함.
+# 3.a. 비속어와 비슷하지만 비속어가 아닌 단어 테스트
+
+# 이 Trie는 변경되지 않기 때문에 fixture 대신 변수로 선언.
+real_trie = Trie.from_file(FWORD_LIST_PATH)
+
+
+@pytest.mark.parametrize("non_fword", ["쉐이더 코드", "쉑쉑버거", "쉐이빙폼"])
+def test_PR77(non_fword):
+    # given
+    # when
+    actual = real_trie.find_all_occurrences(non_fword)
+    # then
+    assert len(actual) == 0
+
+
+@pytest.mark.parametrize("non_fword", ["해야하네", "해야한다", "해야해", "해야해요"])
+def test_PR79(non_fword):
+    # given
+    # when
+    actual = real_trie.find_all_occurrences(non_fword)
+    # then
+    assert len(actual) == 0
+
+
+def test_PR79_2():
+    # given
+    # when
+    actual = real_trie.find_all_occurrences("난 야하다")
+    # then
+    expected = [range(2, 5)]
+    assert all_match(expected, actual)

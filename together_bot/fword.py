@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import csv
 import logging
 import time
@@ -22,7 +24,7 @@ class Fword(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot: commands.Bot = bot
-        self.__load_words_file(FWORD_LIST_PATH)
+        self.__init_search_tree(FWORD_LIST_PATH)
         self.__load_users()
 
     @commands.group(brief="비속어 탐지기")
@@ -78,14 +80,9 @@ class Fword(commands.Cog):
             await message.delete()
             await message.channel.send(f"{message.author.display_name}: {censored}")
 
-    def __load_words_file(self, file_path: str):
-        self.search_tree = Trie()
+    def __init_search_tree(self, file_path: str):
         timestamp_load_begin = time.process_time()
-        with open(file_path, newline="", encoding="utf-8") as file:
-            csv_reader = csv.reader(file, skipinitialspace=True)
-            for row in csv_reader:
-                for col in row:
-                    self.search_tree.insert(col)
+        self.search_tree = Trie.from_file(file_path)
         elapsed_time = time.process_time() - timestamp_load_begin
         logging.info(f"fword list load - elapsed time: {elapsed_time}")
 
@@ -124,6 +121,16 @@ class TrieNode:
 class Trie:
     def __init__(self):
         self.root: TrieNode = TrieNode(None)
+
+    @classmethod
+    def from_file(cls, file_path: str) -> Trie:
+        trie = cls()
+        with open(file_path, newline="", encoding="utf-8") as file:
+            csv_reader = csv.reader(file, skipinitialspace=True)
+            for row in csv_reader:
+                for col in row:
+                    trie.insert(col)
+        return trie
 
     def insert(self, new_value: str):
         # 1. 루트에서 첫 글자부터 하나씩 아래로 노드를 만들면서 맨 끝 글자에 문자열을 삽입한다.
