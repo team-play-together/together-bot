@@ -356,3 +356,12 @@ def test_PR79_2():
     # then
     expected = [range(2, 5)]
     assert all_match(expected, actual)
+
+
+@pytest.mark.parametrize("non_fword", ["도망가다", "구라구라꽃"])
+def test_PR87(non_fword):
+    # given
+    # when
+    actual = real_trie.find_all_occurrences(non_fword)
+    # then
+    assert len(actual) == 0
