@@ -1,6 +1,6 @@
 import pytest
 
-from together_bot.fword import FWORD_LIST_PATH, Trie, TrieNode, censor
+from together_bot.fword import FWORD_LIST_PATH, Trie, TrieNode, summarize_fwords
 
 
 # Helper function
@@ -276,50 +276,48 @@ def test_ignore_incorrect_but_found_first(trie):
 
 
 # 2. fword 명령어 관련 테스트
-# 2.a. censor 테스트
+# 2.a. summarize_fwords() 테스트
 
 
-def test_censor_empty_bounds():
+def test_empty_summary():
     # given
-    message = "hello"
-    bounds = []
+    detected_fwords = None
     # when
-    actual = censor(message, bounds)
+    actual = summarize_fwords(detected_fwords)
     # then
-    expected = "hello"
+    expected = "없음"
     assert actual == expected
 
 
-def test_censor_bounds_only_stop():
+def test_empty_summary2():
     # given
-    message = "hello"
-    bounds = [range(2)]
+    detected_fwords = []
     # when
-    actual = censor(message, bounds)
+    actual = summarize_fwords(detected_fwords)
     # then
-    expected = "||he||llo"
+    expected = "없음"
     assert actual == expected
 
 
-def test_censor_bounds_out_range():
+def test_summary_less_or_equal_max_represent():
     # given
-    message = "hello"
-    bounds = [range(-5, -2), range(-1, 3), range(4, 6), range(7, 12)]
+    max_represent = 3
+    detected_fwords = ["하나", "둘"]
     # when
-    actual = censor(message, bounds)
+    actual = summarize_fwords(detected_fwords, max_represent)
     # then
-    expected = "hello"
+    expected = "하나, 둘"
     assert actual == expected
 
 
-def test_censor():
+def test_summary_over_max_represent():
     # given
-    message = "hello"
-    bounds = [range(1, 3)]
+    max_represent = 3
+    detected_fwords = ["하나", "둘", "셋", "넷"]
     # when
-    actual = censor(message, bounds)
+    actual = summarize_fwords(detected_fwords, max_represent)
     # then
-    expected = "h||el||lo"
+    expected = "하나, 둘, 셋 외 1개"
     assert actual == expected
 
 
