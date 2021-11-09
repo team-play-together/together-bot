@@ -365,3 +365,14 @@ def test_PR87(non_fword):
     actual = real_trie.find_all_occurrences(non_fword)
     # then
     assert len(actual) == 0
+
+
+@pytest.mark.parametrize(
+    "non_fword", ["그건 진짜지", "이건 좀 극혐이다.", "이건 좀 그켬이다", "이건 좀 극1혐이다"]
+)
+def test_PR91(non_fword):
+    # given
+    # when
+    actual = real_trie.find_all_occurrences(non_fword)
+    # then
+    assert len(actual) == 0
