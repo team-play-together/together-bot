@@ -78,7 +78,7 @@ class Fword(commands.Cog):
                 return
 
             # 중복된 비속어는 한번만 출력해야 함.
-            detected_fwords = set(map(lambda r: origin[r.start : r.stop], occurrences))
+            detected_fwords = to_fwords_set(origin, occurrences)
             logging.info(
                 f'fword detect - {message.author.id}: {", ".join(detected_fwords)}'
             )
@@ -98,6 +98,10 @@ class Fword(commands.Cog):
             for (user_id,) in session.query(fword_user.FwordUser.discord_id):
                 self.user_ids.add(user_id)
         logging.info(f"fword user count: {len(self.user_ids)}")
+
+
+def to_fwords_set(origin: str, occurrences: list[range]) -> set[str]:
+    return set(map(lambda r: origin[r.start : r.stop], occurrences))
 
 
 # 감지된 비속어 목록을 요약된 문자열로 표현함.
