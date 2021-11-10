@@ -9,6 +9,8 @@
 ```console
 # create .venv in workspace
 poetry config virtualenvs.in-project true
+# (optional) install pre-commit
+poetry run pre-commit install
 ```
 
 ## Run
