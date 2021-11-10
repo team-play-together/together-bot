@@ -4,8 +4,8 @@ from together_bot.fword import (
     FWORD_LIST_PATH,
     Trie,
     TrieNode,
+    get_detected_fwords,
     summarize_fwords,
-    to_fwords_set,
 )
 
 
@@ -282,13 +282,13 @@ def test_ignore_incorrect_but_found_first(trie):
 
 
 # 2. fword 명령어 관련 테스트
-# 2.a. to_fwords_set() 테스트
+# 2.a. get_detected_fwords() 테스트
 def test_occurrences_to_fwords():
     # given
     origin = "안녕 그리고 안녕"
     occurrences = [range(3, 6)]
     # when
-    actual = to_fwords_set(origin, occurrences)
+    actual = get_detected_fwords(origin, occurrences)
     # then
     expected = set(["그리고"])
     assert actual == expected
@@ -299,7 +299,7 @@ def test_fwords_without_duplicated():
     origin = "안녕 그리고 안녕"
     occurrences = [range(0, 2), range(7, 9)]
     # when
-    actual = to_fwords_set(origin, occurrences)
+    actual = get_detected_fwords(origin, occurrences)
     # then
     expected = set(["안녕"])
     assert actual == expected

@@ -78,7 +78,7 @@ class Fword(commands.Cog):
                 return
 
             # 중복된 비속어는 한번만 출력해야 함.
-            detected_fwords = to_fwords_set(origin, occurrences)
+            detected_fwords = get_detected_fwords(origin, occurrences)
             logging.info(
                 f'fword detect - {message.author.id}: {", ".join(detected_fwords)}'
             )
@@ -100,7 +100,7 @@ class Fword(commands.Cog):
         logging.info(f"fword user count: {len(self.user_ids)}")
 
 
-def to_fwords_set(origin: str, occurrences: list[range]) -> set[str]:
+def get_detected_fwords(origin: str, occurrences: list[range]) -> set[str]:
     return set(map(lambda r: origin[r.start : r.stop], occurrences))
 
 
