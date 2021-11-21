@@ -3,8 +3,8 @@ from __future__ import annotations
 import csv
 import logging
 import time
+from itertools import islice
 from pathlib import Path
-from typing import Iterable
 
 import discord
 from discord.ext import commands
@@ -76,9 +76,16 @@ class Fword(commands.Cog):
             occurrences = self.search_tree.find_all_occurrences(origin)
             if len(occurrences) == 0:
                 return
-            censored = censor(origin, occurrences)
-            await message.delete()
-            await message.channel.send(f"{message.author.display_name}: {censored}")
+
+            # 중복된 비속어는 한번만 출력해야 함.
+            detected_fwords = get_detected_fwords(origin, occurrences)
+            logging.info(
+                f'fword detect - {message.author.id}: {", ".join(detected_fwords)}'
+            )
+
+            await message.reply(
+                "비속어 감지 - " + summarize_fwords(detected_fwords), mention_author=False
+            )
 
     def __init_search_tree(self, file_path: str):
         timestamp_load_begin = time.process_time()
@@ -93,16 +100,21 @@ class Fword(commands.Cog):
         logging.info(f"fword user count: {len(self.user_ids)}")
 
 
-def censor(content: str, bounds: Iterable[range]) -> str:
-    char_list = [*content]
-    for bound in bounds:
-        start = bound.start
-        stop = bound.stop
-        if 0 <= start < stop <= len(content):
-            char_list[start] = "||" + char_list[start]
-            char_list[stop - 1] = char_list[stop - 1] + "||"
+def get_detected_fwords(origin: str, occurrences: list[range]) -> set[str]:
+    return set(map(lambda r: origin[r.start : r.stop], occurrences))
 
-    return "".join(char_list)
+
+# 감지된 비속어 목록을 요약된 문자열로 표현함.
+def summarize_fwords(detected_fwords: set[str], max_represent=3) -> str:
+    if detected_fwords is None or len(detected_fwords) == 0:
+        return "없음"
+
+    # 개수가 max_represent 보다 많으면 "xxx 외 n개"로 표현한다.
+    return ", ".join(islice(detected_fwords, max_represent)) + (
+        f" 외 {len(detected_fwords)-max_represent}개"
+        if len(detected_fwords) > max_represent
+        else ""
+    )
 
 
 def setup(bot: commands.Bot):

@@ -1,6 +1,12 @@
 import pytest
 
-from together_bot.fword import FWORD_LIST_PATH, Trie, TrieNode, censor
+from together_bot.fword import (
+    FWORD_LIST_PATH,
+    Trie,
+    TrieNode,
+    get_detected_fwords,
+    summarize_fwords,
+)
 
 
 # Helper function
@@ -276,50 +282,69 @@ def test_ignore_incorrect_but_found_first(trie):
 
 
 # 2. fword 명령어 관련 테스트
-# 2.a. censor 테스트
-
-
-def test_censor_empty_bounds():
+# 2.a. get_detected_fwords() 테스트
+def test_occurrences_to_fwords():
     # given
-    message = "hello"
-    bounds = []
+    origin = "안녕 그리고 안녕"
+    occurrences = [range(3, 6)]
     # when
-    actual = censor(message, bounds)
+    actual = get_detected_fwords(origin, occurrences)
     # then
-    expected = "hello"
+    expected = set(["그리고"])
     assert actual == expected
 
 
-def test_censor_bounds_only_stop():
+def test_fwords_without_duplicated():
     # given
-    message = "hello"
-    bounds = [range(2)]
+    origin = "안녕 그리고 안녕"
+    occurrences = [range(0, 2), range(7, 9)]
     # when
-    actual = censor(message, bounds)
+    actual = get_detected_fwords(origin, occurrences)
     # then
-    expected = "||he||llo"
+    expected = set(["안녕"])
     assert actual == expected
 
 
-def test_censor_bounds_out_range():
+# 2.b. summarize_fwords() 테스트
+def test_empty_summary():
     # given
-    message = "hello"
-    bounds = [range(-5, -2), range(-1, 3), range(4, 6), range(7, 12)]
+    detected_fwords = None
     # when
-    actual = censor(message, bounds)
+    actual = summarize_fwords(detected_fwords)
     # then
-    expected = "hello"
+    expected = "없음"
     assert actual == expected
 
 
-def test_censor():
+def test_empty_summary2():
     # given
-    message = "hello"
-    bounds = [range(1, 3)]
+    detected_fwords = []
     # when
-    actual = censor(message, bounds)
+    actual = summarize_fwords(detected_fwords)
     # then
-    expected = "h||el||lo"
+    expected = "없음"
+    assert actual == expected
+
+
+def test_summary_less_or_equal_max_represent():
+    # given
+    max_represent = 3
+    detected_fwords = ["하나", "둘"]
+    # when
+    actual = summarize_fwords(detected_fwords, max_represent)
+    # then
+    expected = "하나, 둘"
+    assert actual == expected
+
+
+def test_summary_over_max_represent():
+    # given
+    max_represent = 3
+    detected_fwords = ["하나", "둘", "셋", "넷"]
+    # when
+    actual = summarize_fwords(detected_fwords, max_represent)
+    # then
+    expected = "하나, 둘, 셋 외 1개"
     assert actual == expected
 
 
