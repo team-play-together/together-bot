@@ -401,3 +401,12 @@ def test_PR91(non_fword):
     actual = real_trie.find_all_occurrences(non_fword)
     # then
     assert len(actual) == 0
+
+
+@pytest.mark.parametrize("non_fword", ["analog", "assert", "albamon", "adult", "abuse"])
+def test_PR98(non_fword):
+    # given
+    # when
+    actual = real_trie.find_all_occurrences(non_fword)
+    # then
+    assert len(actual) == 0
