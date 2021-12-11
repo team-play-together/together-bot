@@ -1,8 +1,8 @@
 FROM python:3.9
 
 # Install poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-ENV PATH="/root/.poetry/bin:${PATH}"
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
+ENV PATH="/root/.local/bin:${PATH}"
 RUN poetry config virtualenvs.create false
 
 # Install dependencies
