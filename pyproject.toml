@@ -12,7 +12,7 @@ pyyaml = "^6.0"
 python-dateutil = "^2.8.1"
 aiohttp = "^3.7.4"
 ntplib = "^0.4.0"
-SQLAlchemy = "^1.4.25"
+SQLAlchemy = "^1.4.31"
 psycopg2 = "^2.9.1"
 pre-commit = "^2.15.0"
 
