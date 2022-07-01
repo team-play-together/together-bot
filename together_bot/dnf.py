@@ -33,6 +33,8 @@ class Dnf(commands.Cog):
 
     @dnf.command(brief="오늘의 등급 알림 등록 해제")
     async def unsub(self, ctx: commands.Context):
+        if self.channel is None:
+            return
         self.channel = None
         message = "던파 오늘의 등급 알림을 제거함."
         logging.info(message)
