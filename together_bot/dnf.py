@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import logging
 import os
 
@@ -41,9 +42,14 @@ class Dnf(commands.Cog):
     async def grade(self, ctx: commands.Context):
         await self.get_today_grade()
 
-    @tasks.loop(hours=24)
+    @tasks.loop(minutes=1)
     async def get_today_grade(self):
         logging.debug("DNF get_today_grade called")
+        # KST 0시 1분에 등급을 알려줌.
+        current = datetime.datetime.utcnow()
+        if not (current.hour == 15 and current.min == 1):
+            return
+
         if self.channel is None:
             return
 
