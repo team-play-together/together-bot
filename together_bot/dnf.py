@@ -74,7 +74,7 @@ class Dnf(commands.Cog):
                         message = "던파 오늘의 등급: " + grade
                         await self.channel.send(message)
                         break
-                asyncio.sleep(RETRY_DELAY)
+                await asyncio.sleep(RETRY_DELAY)
         if not is_status_ok:
             await self.channel.send("오늘의 등급: 불러오기 실패")
 
