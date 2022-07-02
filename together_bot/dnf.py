@@ -16,7 +16,7 @@ class Dnf(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot: commands.Bot = bot
         self.channel: discord.TextChannel = None
-        self.get_today_grade.start()
+        self.loop_call_grade.start()
 
     @commands.group(brief="던파 도구")
     async def dnf(self, ctx: commands.Context):
@@ -40,21 +40,30 @@ class Dnf(commands.Cog):
         logging.info(message)
         await ctx.send(message)
 
-    @dnf.command(brief="오늘의 등급 확인")
+    @dnf.command(brief="오늘의 등급 확인 (등록된 채널로 메세지가 전송됨)")
     async def grade(self, ctx: commands.Context):
-        await self.get_today_grade()
+        if self.channel is None:
+            return
 
-    @tasks.loop(minutes=1)
-    async def get_today_grade(self):
-        logging.debug("DNF get_today_grade called")
-        # KST 0시 1분에 등급을 알려줌.
+        grade = await self._get_grade()
+        await self._send_grade(grade)
+
+    @tasks.loop(seconds=10)
+    async def loop_call_grade(self):
+        logging.debug("DNF loop_call_grade called")
+        # KST 0시 0분에 등급을 알려줌.
         current = datetime.datetime.utcnow()
-        if not (current.hour == 15 and current.min == 1):
+        if not (current.hour == 15 and current.minute == 0):
             return
 
         if self.channel is None:
             return
 
+        grade = await self._get_grade()
+        await self._send_grade(grade)
+        await asyncio.sleep(60.0)
+
+    async def __get_grade(self):
         is_status_ok = False
         url = (
             _DNF_API_BASE
@@ -70,15 +79,22 @@ class Dnf(commands.Cog):
                     if response.status == 200:
                         is_status_ok = True
                         content = await response.json()
-                        grade = content["itemGradeName"]
-                        message = "던파 오늘의 등급: " + grade
-                        await self.channel.send(message)
-                        break
+                        return content["itemGradeName"]
                 await asyncio.sleep(RETRY_DELAY)
         if not is_status_ok:
+            return None
+
+    async def __send_grade(self, grade):
+        if self.channel is None:
+            return
+
+        if grade is None:
             await self.channel.send("오늘의 등급: 불러오기 실패")
 
-    @get_today_grade.before_loop
+        message = "던파 오늘의 등급: " + grade
+        await self.channel.send(message)
+
+    @loop_call_grade.before_loop
     async def before_get_today_grade(self):
         logging.info("DNF scheduler: wait for bot ready")
         await self.bot.wait_until_ready()
