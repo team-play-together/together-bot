@@ -45,8 +45,7 @@ class Dnf(commands.Cog):
         if self.channel is None:
             return
 
-        grade = await self._get_grade()
-        await self._send_grade(grade)
+        await self.__try_send_grade()
 
     @tasks.loop(seconds=10)
     async def loop_call_grade(self):
@@ -56,14 +55,13 @@ class Dnf(commands.Cog):
         if not (current.hour == 15 and current.minute == 0):
             return
 
-        if self.channel is None:
-            return
-
-        grade = await self._get_grade()
-        await self._send_grade(grade)
+        await self.__try_send_grade()
         await asyncio.sleep(60.0)
 
-    async def __get_grade(self):
+    async def __try_send_grade(self):
+        if self.channel is None:
+            return False
+
         is_status_ok = False
         url = (
             _DNF_API_BASE
@@ -73,26 +71,21 @@ class Dnf(commands.Cog):
         RETRY_COUNT = 3
         RETRY_DELAY = 1.0
         async with aiohttp.ClientSession() as session:
-            for i in range(RETRY_COUNT):
+            for _ in range(RETRY_COUNT):
                 async with session.get(url) as response:
                     logging.info("DnF API status : {}".format(response.status))
                     if response.status == 200:
                         is_status_ok = True
                         content = await response.json()
-                        return content["itemGradeName"]
+                        grade = content["itemGradeName"]
+                        message = "던파 오늘의 등급: " + grade
+                        await self.channel.send(message)
+                        return True
                 await asyncio.sleep(RETRY_DELAY)
         if not is_status_ok:
-            return None
-
-    async def __send_grade(self, grade):
-        if self.channel is None:
-            return
-
-        if grade is None:
             await self.channel.send("오늘의 등급: 불러오기 실패")
 
-        message = "던파 오늘의 등급: " + grade
-        await self.channel.send(message)
+        return False
 
     @loop_call_grade.before_loop
     async def before_get_today_grade(self):
