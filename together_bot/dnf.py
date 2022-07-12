@@ -18,6 +18,10 @@ class Dnf(commands.Cog):
         self.channel: discord.TextChannel = None
         self.loop_call_grade.start()
 
+    def cog_unload(self):
+        self.loop_call_grade.cancel()
+        return super().cog_unload()
+
     @commands.group(brief="던파 도구")
     async def dnf(self, ctx: commands.Context):
         if ctx.invoked_subcommand is None:
@@ -55,8 +59,9 @@ class Dnf(commands.Cog):
         if not (current.hour == 15 and current.minute == 0):
             return
 
-        await self.__try_send_grade()
-        await asyncio.sleep(60.0)
+        hasSent = await self.__try_send_grade()
+        if hasSent:
+            await asyncio.sleep(60.0)
 
     async def __try_send_grade(self):
         if self.channel is None:
@@ -91,6 +96,10 @@ class Dnf(commands.Cog):
     async def before_get_today_grade(self):
         logging.info("DNF scheduler: wait for bot ready")
         await self.bot.wait_until_ready()
+
+    @loop_call_grade.after_loop
+    async def after_get_today_grade(self):
+        logging.info("DNF scheduler: stop loop")
 
 
 def setup(bot: commands.Bot):
