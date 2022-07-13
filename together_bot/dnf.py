@@ -56,7 +56,7 @@ class Dnf(commands.Cog):
         logging.debug("DNF loop_call_grade called")
         # KST 0시 0분에 등급을 알려줌.
         current = datetime.datetime.utcnow()
-        if not (current.hour == 15 and current.minute == 0):
+        if not (current.hour == 15 and current.minute == 1):
             return
 
         hasSent = await self.__try_send_grade()
