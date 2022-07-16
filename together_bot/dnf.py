@@ -77,11 +77,8 @@ class Dnf(commands.Cog):
         await self.__send_grade(ctx.channel)
 
     async def __send_grade(self, channel: discord.TextChannel):
-        await channel.send(
-            "던파 오늘의 등급: " + self.today_grade
-            if self.today_grade is not None
-            else "갱신되지 않음."
-        )
+        grade_text = self.today_grade if self.today_grade is not None else "갱신되지 않음."
+        await channel.send(f"던파 오늘의 등급: {grade_text}")
 
     @tasks.loop(seconds=10)
     async def loop_call_grade(self):
@@ -110,7 +107,7 @@ class Dnf(commands.Cog):
         async with aiohttp.ClientSession() as session:
             for _ in range(RETRY_COUNT):
                 async with session.get(url) as response:
-                    logging.info("DnF API status : {}".format(response.status))
+                    logging.info(f"DnF API status : {response.status}")
                     if response.status == 200:
                         etag = response.headers["etag"]
                         logging.debug("dnf etag: " + etag)
