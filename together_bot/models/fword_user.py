@@ -1,11 +1,6 @@
 from sqlalchemy import BigInteger, Column, Integer
-from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
-
-
-def setup(engine):
-    Base.metadata.create_all(engine)
+from together_bot.models import Base
 
 
 class FwordUser(Base):
