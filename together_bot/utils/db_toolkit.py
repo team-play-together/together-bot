@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm.session import sessionmaker
 
-import together_bot.models.fword_user
+from together_bot.models import Base
 
 load_dotenv()
 
@@ -18,5 +18,5 @@ def setup():
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
 
     engine = create_engine(DATABASE_URL)
-    together_bot.models.fword_user.setup(engine)
+    Base.metadata.create_all(engine)
     Session.configure(bind=engine)
