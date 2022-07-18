@@ -38,7 +38,6 @@ class Dnf(commands.Cog):
     async def sub(self, ctx: commands.Context):
         channel: discord.TextChannel = ctx.channel
         if channel in self.channels:
-            logging.debug("이미 등록된 채널")
             return
 
         try:
@@ -58,7 +57,6 @@ class Dnf(commands.Cog):
     async def unsub(self, ctx: commands.Context):
         channel: discord.TextChannel = ctx.channel
         if channel not in self.channels:
-            logging.debug("등록되지 않은 채널")
             return
 
         with Session() as session:
@@ -82,7 +80,6 @@ class Dnf(commands.Cog):
 
     @tasks.loop(seconds=10)
     async def loop_call_grade(self):
-        logging.debug("DNF loop_call_grade called")
         # KST 0시 0분에 등급을 알려줌.
         current = datetime.datetime.utcnow()
         if not (current.hour == 15 and current.minute == 0):
@@ -110,7 +107,7 @@ class Dnf(commands.Cog):
                     logging.info(f"DnF API status : {response.status}")
                     if response.status == 200:
                         etag = response.headers["etag"]
-                        logging.debug("dnf etag: " + etag)
+                        logging.info("DnF etag: " + etag)
                         if etag == self.last_etag:
                             return False
 
