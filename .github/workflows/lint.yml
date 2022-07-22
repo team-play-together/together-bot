@@ -10,12 +10,16 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v4.1.0
-        with:
-          python-version: '3.x'
-          cache: 'pipenv'
+      - uses: actions/checkout@v3
       - uses: isort/isort-action@master
         with:
           isortVersion: '5.8.0'
-      - uses: psf/black@21.5b1
+      - uses: psf/black@stable
+      - name: Install poetry
+        run: pipx install poetry
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: 'poetry'
+      - run: poetry install
+      - run: poetry run pytest
