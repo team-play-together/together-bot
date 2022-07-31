@@ -4,13 +4,14 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.session import sessionmaker
 
 import together_bot.models.fword_user as fword_user
+from together_bot.models import Base
 
 
 # 각 테스트마다 인메모리 DB를 재시작함.
 @pytest.fixture(autouse=True)
 def Session():
     engine = create_engine("sqlite:///:memory:")
-    fword_user.setup(engine)
+    Base.metadata.create_all(engine)
     Session = sessionmaker(engine)
     return Session
 
