@@ -38,6 +38,7 @@ class Dnf(commands.Cog):
     async def sub(self, ctx: commands.Context):
         channel: discord.TextChannel = ctx.channel
         if channel in self.channels:
+            logging.info(f"이미 등록된 채널: [{channel.id}] {channel.name}")
             return
 
         try:
@@ -49,14 +50,14 @@ class Dnf(commands.Cog):
                 raise
         self.channels.add(channel)
 
-        message = f"던파 오늘의 등급 알림을 이 채널에 추가함. {channel.name}"
-        logging.info(message)
-        await ctx.send(message)
+        logging.info(f"던파 오늘의 등급 알림 추가: [{channel.id}] {channel.name}")
+        await ctx.send("던파 오늘의 등급 알림을 이 채널에 추가함.")
 
     @dnf.command(brief="오늘의 등급 알림 등록 해제")
     async def unsub(self, ctx: commands.Context):
         channel: discord.TextChannel = ctx.channel
         if channel not in self.channels:
+            logging.info(f"등록되지 않은 채널: [{channel.id}] {channel.name}")
             return
 
         with Session() as session:
@@ -66,15 +67,17 @@ class Dnf(commands.Cog):
                 session.commit()
         self.channels.discard(channel)
 
-        message = "던파 오늘의 등급 알림을 제거함."
-        logging.info(message)
-        await ctx.send(message)
+        logging.info(f"던파 오늘의 등급 알림 제거: [{channel.id}] {channel.name}")
+        await ctx.send("던파 오늘의 등급 알림을 제거함.")
 
-    @dnf.command(brief="오늘의 등급 확인 (등록된 채널로 메세지가 전송됨)")
+    @dnf.command(brief="오늘의 등급 확인")
     async def grade(self, ctx: commands.Context):
         await self.__send_grade(ctx.channel)
 
     async def __send_grade(self, channel: discord.TextChannel):
+        if channel is None:
+            return
+
         grade_text = self.today_grade if self.today_grade is not None else "갱신되지 않음."
         await channel.send(f"던파 오늘의 등급: {grade_text}")
 
@@ -120,7 +123,7 @@ class Dnf(commands.Cog):
         return False
 
     @loop_call_grade.before_loop
-    async def before_get_today_grade(self):
+    async def before_loop(self):
         logging.info("DNF scheduler: wait for bot ready")
         await self.bot.wait_until_ready()
         self.__load_channels()
@@ -129,7 +132,7 @@ class Dnf(commands.Cog):
         await self.__try_update_grade()
 
     @loop_call_grade.after_loop
-    async def after_get_today_grade(self):
+    async def after_loop(self):
         logging.info("DNF scheduler: stop loop")
 
     def __load_channels(self):
@@ -141,6 +144,12 @@ class Dnf(commands.Cog):
                 dnf_grade_channel.DnfGradeChannel.discord_id
             ):
                 new_channel = self.bot.get_channel(channel_id)
+                if new_channel is None or new_channel is not discord.TextChannel:
+                    logging.warn(
+                        f"dnf load channels: [{channel_id}] 존재하지 않는 채널이거나 텍스트 채널이 아님."
+                    )
+                    continue
+
                 self.channels.add(new_channel)
         logging.info(f"dnf subscribed channel count: {len(self.channels)}")
 
