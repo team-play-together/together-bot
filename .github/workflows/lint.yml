@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: isort/isort-action@master
         with:
           isortVersion: '5.8.0'
