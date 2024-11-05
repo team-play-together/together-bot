@@ -6,7 +6,7 @@ authors = ["Lyuha <lyuha@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-"discord.py" = "^1.5.1"
+"discord.py" = "^2.4.0"
 python-dotenv = "^0.20.0"
 pyyaml = "^6.0"
 python-dateutil = "^2.8.1"
