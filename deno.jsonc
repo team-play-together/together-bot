@@ -1,0 +1,21 @@
+{
+  "tasks": {
+    "dev": "deno run --watch --allow-env --allow-read=.env --allow-net main.ts",
+    "start": "deno run --allow-env --allow-read=.env --allow-net main.ts",
+    "register": "deno run --allow-env --allow-read=.env --allow-net commands.ts"
+  },
+  "imports": {
+    "@hono/hono": "jsr:@hono/hono@^4.6.8",
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
+    "@std/encoding": "jsr:@std/encoding@^1.0.5",
+    "@std/io": "jsr:@std/io@^0.225.0",
+    "discord-interactions": "npm:discord-interactions@^4.1.0",
+    "discord-types": "https://deno.land/x/discord_api_types@0.37.102/v10.ts",
+    "tweetnacl": "npm:tweetnacl@^1.0.3"
+  },
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx"
+  }
+}
