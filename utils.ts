@@ -5,7 +5,11 @@ import "jsr:@std/dotenv/load";
 import nacl from "tweetnacl";
 import { createMiddleware } from "@hono/hono/factory";
 import { HTTPException } from "@hono/hono/http-exception";
-import { type Snowflake } from "discord-types";
+import {
+  RESTPostAPIGuildScheduledEventJSONBody,
+  type Snowflake,
+} from "discord-types";
+import { RESTPostAPIApplicationCommandsJSONBody } from "https://deno.land/x/discord_api_types@0.37.102/rest/v10/mod.ts";
 
 export async function requestDiscord(
   endpoint: string | URL,
@@ -35,12 +39,15 @@ export async function requestDiscord(
 
 export async function installGlobalCommands(
   appId: Snowflake,
-  commands: BodyInit,
+  commands: RESTPostAPIApplicationCommandsJSONBody[],
 ) {
-  const endpoint = `applications/${appId}/commands`;
+  const endpoint = `/applications/${appId}/commands`;
 
   try {
-    await requestDiscord(endpoint, { method: "PUT", body: commands });
+    await requestDiscord(endpoint, {
+      method: "PUT",
+      body: JSON.stringify(commands),
+    });
   } catch (err) {
     console.error(err);
   }

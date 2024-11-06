@@ -1,13 +1,15 @@
 import "jsr:@std/dotenv/load";
 
 import {
+  APIApplicationCommand,
   ApplicationCommandType,
   ApplicationIntegrationType,
   InteractionContextType,
+  RESTPostAPIApplicationCommandsJSONBody,
 } from "discord-types";
 import { installGlobalCommands } from "./utils.ts";
 
-const TEST_COMMAND = {
+const TEST_COMMAND: RESTPostAPIApplicationCommandsJSONBody = {
   name: "test",
   description: "Basic command",
   type: ApplicationCommandType.ChatInput,
@@ -22,7 +24,7 @@ const TEST_COMMAND = {
   ],
 };
 
-const PIN_MESSAGE_COMMAND = {
+const PIN_MESSAGE_COMMAND: RESTPostAPIApplicationCommandsJSONBody = {
   name: "pin",
   type: ApplicationCommandType.Message,
   integration_types: [ApplicationIntegrationType.GuildInstall],
@@ -32,8 +34,8 @@ const PIN_MESSAGE_COMMAND = {
   ],
 };
 
-const UNPIN_MESSAGE_COMMAND = {
-  name: "pin",
+const UNPIN_MESSAGE_COMMAND: RESTPostAPIApplicationCommandsJSONBody = {
+  name: "unpin",
   type: ApplicationCommandType.Message,
   integration_types: [ApplicationIntegrationType.GuildInstall],
   contexts: [
@@ -46,7 +48,8 @@ const ALL_COMMANDS = [TEST_COMMAND, PIN_MESSAGE_COMMAND, UNPIN_MESSAGE_COMMAND];
 
 if (import.meta.main) {
   const appId = Deno.env.get("APP_ID");
+
   if (appId) {
-    installGlobalCommands(appId, JSON.stringify(ALL_COMMANDS));
+    installGlobalCommands(appId, ALL_COMMANDS);
   }
 }
