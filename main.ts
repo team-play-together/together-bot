@@ -67,7 +67,6 @@ app.post("/interactions", async (c) => {
                 "type": InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 data: {
                   content: `Pin message`,
-                  flags: MessageFlags.Ephemeral,
                 },
               });
             } catch (err) {
